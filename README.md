@@ -1,2 +1,2 @@
 # solago
-Solano sdk and rpc library
+Solana sdk and rpc library written in Go
