@@ -1,12 +1,68 @@
 package test
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/DeTix-xyz/solago/src/rpc"
+	"github.com/DeTix-xyz/solago/src/sdk"
 	"github.com/google/uuid"
 )
+
+func TestCreateAccount(t *testing.T) {
+	// Sugar daddy
+	payer := sdk.NewKeypairFromFile("/Users/trumanpurnell/.config/solana/id.json")
+
+	// New account to be created
+	account := sdk.NewKeypairFromSeed([32]byte{})
+
+	// Transaction to create account
+	transaction := &sdk.Transaction{
+		Signatures: sdk.NewCompactArray(2,
+			sdk.SerializablePrivateKey(payer.PrivateKey),
+			sdk.SerializablePrivateKey(account.PrivateKey),
+		),
+		Message: sdk.Message{
+			Header: sdk.MessageHeader{
+				NumberRequiredSignatures:       sdk.SerializableUInt8(2),
+				NumberReadOnlySignedAccounts:   sdk.SerializableUInt8(0),
+				NumberReadOnlyUnsignedAccounts: sdk.SerializableUInt8(1),
+			},
+			AccountAddresses: sdk.NewCompactArray(3,
+				sdk.SerializablePublicKey(payer.PublicKey),
+				sdk.SerializablePublicKey(account.PublicKey),
+				sdk.SerializablePublicKey(sdk.SystemProgram),
+			),
+			RecentBlockhash: sdk.RecentBlockhashFromString("7xq4MaWpVTyTsRG13GGFMHYLKx2sPQkzoRFwv7SRBSTb"),
+			Instructions: sdk.NewCompactArray(1, &sdk.Instruction{
+				ProgramIDIndex:        sdk.SerializableUInt8(2),
+				AccountAddressIndexes: sdk.NewCompactArray(2, sdk.SerializableUInt8(0), sdk.SerializableUInt8(1)),
+				Data: sdk.NewCompactArray(52, &sdk.InstructionData{
+					struct {
+						Instruction sdk.SystemInstruction     // 4 +
+						Lamports    uint64                    // 8 +
+						Space       uint64                    // 8 +
+						Owner       sdk.SerializablePublicKey // 32 == 52
+					}{
+						Instruction: sdk.CreateAccount,
+						Lamports:    1_000_000_000 / 10,
+						Space:       32,
+						Owner:       sdk.SerializablePublicKey(sdk.PublicKey("7JM3jwj2hp9ULM6mqCrtX6PKeeG6C5STPPsFwXBF36CF")),
+					},
+				}),
+			}),
+		},
+	}
+
+	buffer := new(bytes.Buffer)
+
+	transaction.Serialize(buffer)
+	signedTransaction := transaction.Sign(buffer)
+
+	fmt.Println(signedTransaction)
+}
 
 func TestGetBlockhash(t *testing.T) {
 
