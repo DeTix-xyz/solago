@@ -25,11 +25,7 @@ func TestCreateAccount(t *testing.T) {
 			sdk.SerializablePrivateKey(account.PrivateKey),
 		),
 		Message: sdk.Message{
-			Header: sdk.MessageHeader{
-				NumberRequiredSignatures:       sdk.SerializableUInt8(2),
-				NumberReadOnlySignedAccounts:   sdk.SerializableUInt8(0),
-				NumberReadOnlyUnsignedAccounts: sdk.SerializableUInt8(1),
-			},
+			Header: sdk.NewMessageHeader(2, 0, 1),
 			AccountAddresses: sdk.NewCompactArray(3,
 				sdk.SerializablePublicKey(payer.PublicKey),
 				sdk.SerializablePublicKey(account.PublicKey),

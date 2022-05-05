@@ -13,6 +13,14 @@ type MessageHeader struct {
 	NumberReadOnlyUnsignedAccounts SerializableUInt8
 }
 
+func NewMessageHeader(required, readOnlySigned, readOnlyUnsigned uint8) MessageHeader {
+	return MessageHeader{
+		NumberRequiredSignatures:       SerializableUInt8(required),
+		NumberReadOnlySignedAccounts:   SerializableUInt8(readOnlySigned),
+		NumberReadOnlyUnsignedAccounts: SerializableUInt8(readOnlyUnsigned),
+	}
+}
+
 func (header *MessageHeader) Serialize(buffer *bytes.Buffer) *bytes.Buffer {
 	header.NumberRequiredSignatures.Serialize(buffer)
 	header.NumberReadOnlySignedAccounts.Serialize(buffer)
