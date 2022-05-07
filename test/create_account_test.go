@@ -36,7 +36,7 @@ func TestCreateAccount(t *testing.T) {
 				ProgramIDIndex:        sdk.SerializableUInt8(2),
 				AccountAddressIndexes: sdk.NewCompactArray(2, sdk.SerializableUInt8(0), sdk.SerializableUInt8(1)),
 				Data: sdk.NewCompactArray(52, &sdk.InstructionData{
-					struct {
+					Data: struct {
 						Instruction sdk.SystemInstruction     // 4 +
 						Lamports    uint64                    // 8 +
 						Space       uint64                    // 8 +

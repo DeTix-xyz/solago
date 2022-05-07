@@ -14,6 +14,8 @@ type Keypair struct {
 	PrivateKey ed25519.PrivateKey
 }
 
+var NilPublicKey = PublicKey("11111111111111111111111111111111")
+
 func PublicKey(key string) ed25519.PublicKey {
 	publicKey, _ := base58.Decode(key)
 	return publicKey
