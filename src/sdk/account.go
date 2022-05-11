@@ -16,6 +16,9 @@ type Keypair struct {
 
 var NilPublicKey = PublicKey("11111111111111111111111111111111")
 
+const SizeOfMintAccount = 82
+const SizeOfMultisigAccount = 355
+
 func PublicKey(key string) ed25519.PublicKey {
 	publicKey, _ := base58.Decode(key)
 	return publicKey
