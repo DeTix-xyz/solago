@@ -51,7 +51,7 @@ const (
 	TransferWithSeed
 )
 
-type TokenInstruction uint32
+type TokenInstruction uint8
 
 const (
 	InitializeMint TokenInstruction = iota
