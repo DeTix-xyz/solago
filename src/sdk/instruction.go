@@ -25,6 +25,14 @@ type InstructionData struct {
 }
 
 func (instructionData *InstructionData) Serialize(buffer *bytes.Buffer) *bytes.Buffer {
+	bytes, ok := instructionData.Data.([]byte) // we may simply be passed a byte array
+
+	if ok {
+		buffer.Write(bytes)
+		return buffer
+	}
+
+	// otherwise parse the struct
 	structValues := reflect.ValueOf(instructionData.Data)
 
 	for i := 0; i < structValues.NumField(); i++ {
