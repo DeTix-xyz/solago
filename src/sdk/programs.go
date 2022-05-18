@@ -2,6 +2,7 @@ package sdk
 
 var (
 	SystemProgram                    = PublicKey("11111111111111111111111111111111")
+	RentProgram                      = PublicKey("SysvarRent111111111111111111111111111111111")
 	ConfigProgram                    = PublicKey("Config1111111111111111111111111111111111111")
 	StakeProgram                     = PublicKey("Stake11111111111111111111111111111111111111")
 	VoteProgram                      = PublicKey("Vote111111111111111111111111111111111111111")
