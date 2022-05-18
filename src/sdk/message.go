@@ -13,9 +13,9 @@ type MessageHeader struct {
 	NumberReadOnlyUnsignedAccounts SerializableUInt8
 }
 
-func NewMessageHeader(required, readOnlySigned, readOnlyUnsigned uint8) MessageHeader {
+func NewMessageHeader(requiredSignatures, readOnlySigned, readOnlyUnsigned uint8) MessageHeader {
 	return MessageHeader{
-		NumberRequiredSignatures:       SerializableUInt8(required),
+		NumberRequiredSignatures:       SerializableUInt8(requiredSignatures),
 		NumberReadOnlySignedAccounts:   SerializableUInt8(readOnlySigned),
 		NumberReadOnlyUnsignedAccounts: SerializableUInt8(readOnlyUnsigned),
 	}
