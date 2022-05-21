@@ -6,3 +6,5 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/mr-tron/base58 v1.2.0
 )
+
+require filippo.io/edwards25519 v1.0.0-rc.1

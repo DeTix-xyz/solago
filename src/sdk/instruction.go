@@ -25,7 +25,8 @@ type InstructionData struct {
 }
 
 func (instructionData *InstructionData) Serialize(buffer *bytes.Buffer) *bytes.Buffer {
-	bytes, ok := instructionData.Data.([]byte) // we may simply be passed a byte array
+	// we may simply be passed a byte array, just write it to the buffer
+	bytes, ok := instructionData.Data.([]byte)
 
 	if ok {
 		buffer.Write(bytes)
@@ -88,7 +89,7 @@ const (
 type MetadataInstruction uint8
 
 const (
-	CreateMetadataAccount = iota
+	CreateMetadataAccount MetadataInstruction = iota
 	UpdateMetadataAccount
 	DeprecatedCreateMasterEdition
 	DeprecatedMintNewEditionFromMasterEditionViaPrintingToken
