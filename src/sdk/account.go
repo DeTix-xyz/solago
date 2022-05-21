@@ -89,17 +89,16 @@ func IsOnCurve(b []byte) bool {
 	return isOnCurve
 }
 
-// Find a valid program address and its corresponding bump seed.
-func FindProgramAddress(seed [][]byte, programID ed25519.PublicKey) ed25519.PublicKey {
+func FindProgramAddress(seed [][]byte, programID ed25519.PublicKey) (ed25519.PublicKey, error) {
 	bumpSeed := uint8(math.MaxUint8)
 
 	for bumpSeed != 0 {
 		address, err := CreateProgramAddress(append(seed, []byte{byte(bumpSeed)}), programID)
 		if err == nil {
-			return address
+			return address, nil
 		}
 		bumpSeed--
 	}
 
-	return nil
+	return nil, errors.New("Could not find valid key for given seeds")
 }

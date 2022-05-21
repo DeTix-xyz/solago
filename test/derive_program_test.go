@@ -8,7 +8,7 @@ import (
 )
 
 func TestDeriveProgram(t *testing.T) {
-	key := sdk.FindProgramAddress(
+	key, _ := sdk.FindProgramAddress(
 		[][]byte{ // seeds
 			[]byte("metadata"),
 			sdk.MetaplexTokenMetaProgram,
