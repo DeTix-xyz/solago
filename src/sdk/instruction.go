@@ -48,7 +48,7 @@ type SystemInstruction uint32
 const (
 	CreateAccount SystemInstruction = iota
 	Assign
-	TransferSystem
+	SystemInstructionTransfer
 	CreateAccountWithSeed
 	AdvanceNonceAccount
 	WithdrawNonceAccount
@@ -66,14 +66,14 @@ const (
 	InitializeMint TokenInstruction = iota
 	InitializeAccount
 	InitializeMultisig
-	TransferToken
+	TokenInstructionTransfer
 	Approve
 	Revoke
 	SetAuthority
 	MintTo
 	Burn
-	CloseAccount
-	FreezeAccount
+	TokenInstructionCloseAccount
+	TokenInstructionFreezeAccount
 	ThawAccount
 	TransferChecked
 	ApproveChecked
@@ -84,6 +84,18 @@ const (
 	InitializeAccount3
 	InitializeMultisig2
 	InitializeMint2
+)
+
+type TokenAuthorityType uint8
+
+const (
+	MintTokens TokenAuthorityType = iota
+	FreezeAccount
+	AccountOwner
+	CloseAccount
+	TransferFeeConfig
+	WithheldWithdraw
+	CloseMint
 )
 
 type MetadataInstruction uint8
