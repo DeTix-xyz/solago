@@ -20,6 +20,7 @@ const PACKET_DATA_SIZE = 1280 - 40 - 8
 type Serializable interface {
 	Serialize(buffer *bytes.Buffer) *bytes.Buffer
 }
+
 type SerializableUInt8 uint8
 type SerializablePublicKey ed25519.PublicKey
 type SerializablePrivateKey ed25519.PrivateKey

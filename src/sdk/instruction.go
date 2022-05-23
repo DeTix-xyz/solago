@@ -2,14 +2,12 @@ package sdk
 
 import (
 	"bytes"
-	"encoding/binary"
-	"reflect"
 )
 
 type Instruction struct {
 	ProgramIDIndex        SerializableUInt8
 	AccountAddressIndexes *CompactArray[SerializableUInt8]
-	Data                  *CompactArray[*InstructionData]
+	Data                  *CompactArray[Serializable]
 }
 
 func (instruction *Instruction) Serialize(buffer *bytes.Buffer) *bytes.Buffer {
@@ -20,25 +18,25 @@ func (instruction *Instruction) Serialize(buffer *bytes.Buffer) *bytes.Buffer {
 	return buffer
 }
 
-type InstructionData struct {
-	Data interface{}
-}
+// type InstructionData struct {
+// 	Data Serializable
+// }
 
-func (instructionData *InstructionData) Serialize(buffer *bytes.Buffer) *bytes.Buffer {
-	// we may simply be passed a byte array, just write it to the buffer
-	bytes, ok := instructionData.Data.([]byte)
+// func (instructionData *InstructionData) Serialize(buffer *bytes.Buffer) *bytes.Buffer {
+// 	// we may simply be passed a byte array, just write it to the buffer
+// 	bytes, ok := instructionData.Data.([]byte)
 
-	if ok {
-		buffer.Write(bytes)
-		return buffer
-	}
+// 	if ok {
+// 		buffer.Write(bytes)
+// 		return buffer
+// 	}
 
-	// otherwise parse the struct
-	structValues := reflect.ValueOf(instructionData.Data)
+// 	// otherwise parse the struct
+// 	structValues := reflect.ValueOf(instructionData.Data)
 
-	for i := 0; i < structValues.NumField(); i++ {
-		binary.Write(buffer, binary.LittleEndian, structValues.Field(i).Interface())
-	}
+// 	for i := 0; i < structValues.NumField(); i++ {
+// 		binary.Write(buffer, binary.LittleEndian, structValues.Field(i).Interface())
+// 	}
 
-	return buffer
-}
+// 	return buffer
+// }

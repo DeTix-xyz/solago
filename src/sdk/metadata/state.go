@@ -1,6 +1,11 @@
 package metadata
 
-import "crypto/ed25519"
+import (
+	"bytes"
+	"crypto/ed25519"
+
+	"github.com/near/borsh-go"
+)
 
 type Creator struct {
 	Address  ed25519.PublicKey
@@ -28,6 +33,7 @@ type Uses struct {
 }
 
 type Metadata struct {
+	Instruction          MetadataInstruction
 	Name                 string
 	Symbol               string
 	URI                  string
@@ -36,4 +42,12 @@ type Metadata struct {
 	Collection           *Collection
 	Uses                 *Uses
 	IsMutable            bool
+}
+
+func (metadata *Metadata) Serialize(buffer *bytes.Buffer) *bytes.Buffer {
+	bytes, _ := borsh.Serialize(metadata)
+
+	buffer.Write(bytes)
+
+	return buffer
 }
