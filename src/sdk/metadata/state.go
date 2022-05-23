@@ -30,7 +30,7 @@ type Uses struct {
 type Metadata struct {
 	Name                 string
 	Symbol               string
-	Uri                  string
+	URI                  string
 	SellerFeeBasisPoints uint16
 	Creators             *[]Creator
 	Collection           *Collection
