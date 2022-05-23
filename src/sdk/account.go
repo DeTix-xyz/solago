@@ -100,5 +100,5 @@ func FindProgramAddress(seed [][]byte, programID ed25519.PublicKey) (ed25519.Pub
 		bumpSeed--
 	}
 
-	return nil, errors.New("Could not find valid key for given seeds")
+	return nil, errors.New("could not find valid key for given seeds")
 }
