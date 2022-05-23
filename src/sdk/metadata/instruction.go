@@ -1,0 +1,35 @@
+package metadata
+
+type MetadataInstruction uint8
+
+const (
+	CreateMetadataAccount MetadataInstruction = iota
+	UpdateMetadataAccount
+	DeprecatedCreateMasterEdition
+	DeprecatedMintNewEditionFromMasterEditionViaPrintingToken
+	UpdatePrimarySaleHappenedViaToken
+	DeprecatedSetReservationList
+	DeprecatedCreateReservationList
+	SignMetadata
+	DeprecatedMintPrintingTokensViaToken
+	DeprecatedMintPrintingTokens
+	CreateMasterEdition
+	MintNewEditionFromMasterEditionViaToken
+	ConvertMasterEditionV1ToV2
+	MintNewEditionFromMasterEditionViaVaultProxy
+	PuffMetadata
+	UpdateMetadataAccountV2
+	CreateMetadataAccountV2
+	CreateMasterEditionV3
+	VerifyCollection
+	Utilize
+	ApproveUseAuthority
+	RevokeUseAuthority
+	UnverifyCollection
+	ApproveCollectionAuthority
+	RevokeCollectionAuthority
+	SetAndVerifyCollection
+	FreezeDelegatedAccount
+	ThawDelegatedAccount
+	RemoveCreatorVerification
+)
