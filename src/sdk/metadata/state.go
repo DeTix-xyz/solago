@@ -1,16 +1,16 @@
 package metadata
 
-import "github.com/DeTix-xyz/solago/src/sdk/transaction"
+import "github.com/DeTix-xyz/solago/src/sdk/account"
 
 type Creator struct {
-	Address  transaction.PublicKey
+	Address  account.PublicKey
 	Verified bool
 	Share    uint8 // In percentages
 }
 
 type Collection struct {
 	Verified bool
-	Key      transaction.PublicKey
+	Key      account.PublicKey
 }
 
 type UseMethod uint8

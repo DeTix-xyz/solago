@@ -1,4 +1,4 @@
-package transaction
+package account
 
 import (
 	"bytes"
@@ -26,7 +26,6 @@ const SizeOfMintAccount = 82
 const SizeOfMultisigAccount = 355
 
 var PDAMarker = []byte("ProgramDerivedAddress")
-var NilPublicKey = NewPublicKey("11111111111111111111111111111111")
 
 func NewPublicKey(key string) PublicKey {
 	publicKey, _ := base58.Decode(key)
