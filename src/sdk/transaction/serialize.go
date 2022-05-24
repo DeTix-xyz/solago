@@ -32,12 +32,6 @@ func Serialize(value any) *bytes.Buffer {
 
 func serialize(value reflect.Value, buffer *bytes.Buffer) {
 	switch value.Kind() {
-	case reflect.Bool:
-		if value.Bool() {
-			binary.Write(buffer, binary.LittleEndian, byte(1))
-		} else {
-			binary.Write(buffer, binary.LittleEndian, byte(0))
-		}
 	case reflect.Slice:
 		for i := 0; i < value.Len(); i++ {
 			serialize(value.Index(i), buffer)
