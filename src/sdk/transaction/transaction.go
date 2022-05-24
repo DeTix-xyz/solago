@@ -1,4 +1,4 @@
-package sdk
+package transaction
 
 import (
 	"bytes"
@@ -7,15 +7,8 @@ import (
 )
 
 type Transaction struct {
-	Signatures *CompactArray[SerializablePrivateKey]
+	Signatures *CompactArray
 	Message    Message
-}
-
-func (transaction *Transaction) Serialize(buffer *bytes.Buffer) *bytes.Buffer {
-	transaction.Signatures.Serialize(buffer)
-	transaction.Message.Serialize(buffer)
-
-	return buffer
 }
 
 func (transaction *Transaction) Sign(buffer *bytes.Buffer) string {
@@ -26,10 +19,10 @@ func (transaction *Transaction) Sign(buffer *bytes.Buffer) string {
 	message := allBytes[signatureCutoff:]
 
 	for i, privateKey := range transaction.Signatures.Items {
-		start := i * ed25519.PrivateKeySize
-		end := (i + 1) * ed25519.PrivateKeySize
+		start := i*ed25519.PrivateKeySize + 1
+		end := (i+1)*ed25519.PrivateKeySize + 1
 
-		copy(signatures[start+1:end+1], ed25519.Sign(ed25519.PrivateKey(privateKey), message))
+		copy(signatures[start:end], ed25519.Sign(privateKey.(ed25519.PrivateKey), message))
 	}
 
 	return base64.StdEncoding.EncodeToString(allBytes)

@@ -1,4 +1,4 @@
-package sdk
+package transaction
 
 var (
 	SystemProgram                    = PublicKey("11111111111111111111111111111111")

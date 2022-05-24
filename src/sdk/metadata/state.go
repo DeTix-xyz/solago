@@ -1,21 +1,16 @@
 package metadata
 
-import (
-	"bytes"
-	"crypto/ed25519"
-
-	"github.com/near/borsh-go"
-)
+import "github.com/DeTix-xyz/solago/src/sdk/transaction"
 
 type Creator struct {
-	Address  ed25519.PublicKey
+	Address  transaction.PublicKey
 	Verified bool
 	Share    uint8 // In percentages
 }
 
 type Collection struct {
 	Verified bool
-	Key      ed25519.PublicKey
+	Key      transaction.PublicKey
 }
 
 type UseMethod uint8
@@ -42,12 +37,4 @@ type Metadata struct {
 	Collection           *Collection
 	Uses                 *Uses
 	IsMutable            bool
-}
-
-func (metadata *Metadata) Serialize(buffer *bytes.Buffer) *bytes.Buffer {
-	bytes, _ := borsh.Serialize(metadata)
-
-	buffer.Write(bytes)
-
-	return buffer
 }
