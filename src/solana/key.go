@@ -1,4 +1,4 @@
-package account
+package solana
 
 import (
 	"bytes"
@@ -20,6 +20,13 @@ type PrivateKey ed25519.PrivateKey
 type Keypair struct {
 	PublicKey  PublicKey
 	PrivateKey PrivateKey
+}
+
+type Account struct {
+	Read    bool
+	Write   bool
+	Signer  bool
+	Keypair Keypair
 }
 
 const SizeOfMintAccount = 82

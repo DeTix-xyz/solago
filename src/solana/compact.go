@@ -1,4 +1,4 @@
-package transaction
+package solana
 
 type CompactArray struct {
 	Length uint16

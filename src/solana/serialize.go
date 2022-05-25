@@ -1,11 +1,11 @@
-package transaction
+package solana
 
 import (
 	"bytes"
 	"encoding/binary"
 	"reflect"
 
-	"github.com/DeTix-xyz/solago/src/sdk/metadata"
+	"github.com/DeTix-xyz/solago/src/metadata"
 	"github.com/near/borsh-go"
 )
 

@@ -1,4 +1,4 @@
-package account
+package solana
 
 var (
 	NilPublicKey                     = NewPublicKey("11111111111111111111111111111111")

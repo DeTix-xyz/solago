@@ -1,4 +1,4 @@
-package rpc
+package solana
 
 import (
 	"bytes"
@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 const JSON_RPC_VERSION = "2.0"
@@ -93,4 +95,34 @@ func (jrpc *JSONRPCClient) Call(RPCRequest *JSONRPCRequest) ([]byte, error) {
 	defer HTTPResponse.Body.Close()
 
 	return io.ReadAll(HTTPResponse.Body)
+}
+
+func (jrpc *JSONRPCClient) GetRecentBlockhash() RecentBlockhash {
+	responseBytes, _ := jrpc.Call(
+		&JSONRPCRequest{
+			Version: JSON_RPC_VERSION,
+			ID:      uuid.NewString(),
+			Method:  "getLatestBlockhash",
+			Params: []map[string]string{
+				{"commitment": "processed"},
+			},
+		},
+	)
+
+	blockhashResponse := &struct {
+		JSONRPCResponse
+		Result struct {
+			Context struct {
+				Slot int `json:"slot"`
+			} `json:"context"`
+			Value struct {
+				Blockhash            string `json:"blockhash"`
+				LastValidBlockHeight int    `json:"lastValidBlockHeight"`
+			} `json:"value"`
+		} `json:"result"`
+	}{}
+
+	json.Unmarshal(responseBytes, &blockhashResponse)
+
+	return RecentBlockhashFromString(blockhashResponse.Result.Value.Blockhash)
 }
