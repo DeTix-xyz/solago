@@ -38,8 +38,12 @@ func (instruction *CreateAccountInstruction) Size() int {
 		int(reflect.TypeOf(instruction.Owner).Size())
 }
 
-func (instruction *CreateAccountInstruction) Program() Account {
-	return SystemProgramAccount
+func (instruction *CreateAccountInstruction) ProgramIDIndex() uint8 {
+	return 0
+}
+
+func (instruction *CreateAccountInstruction) AccountAddressIndexes() CompactArray {
+	return CompactArray{}
 }
 
 func (instruction *CreateAccountInstruction) CollectAccounts() []Account {
