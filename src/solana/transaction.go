@@ -1,21 +1,8 @@
 package solana
 
-import (
-	"bytes"
-	"crypto/ed25519"
-	"encoding/base64"
-)
-
 type Transaction struct {
 	Signatures CompactArray
 	Message    Message
-}
-
-func (client *JSONRPCClient) NewTransaction(accounts []Account, instructions []Instruction) Transaction {
-	return Transaction{
-		Signatures: getSignaturesFromAccounts(accounts),
-		Message:    client.NewMessage(accounts, instructions),
-	}
 }
 
 func getSignaturesFromAccounts(accounts []Account) CompactArray {
@@ -30,20 +17,27 @@ func getSignaturesFromAccounts(accounts []Account) CompactArray {
 	return CompactArray{uint16(len(signatures)), signatures}
 }
 
-func (transaction *Transaction) Sign(buffer *bytes.Buffer) string {
-	allBytes := buffer.Bytes()
-	signatureCutoff := transaction.Signatures.Length*ed25519.PrivateKeySize + 1
+func (transaction *Transaction) Sign(accounts []Account) string {
 
-	signatures := allBytes[:signatureCutoff]
-	message := allBytes[signatureCutoff:]
+	//
+	// NEEDS to compute message header
+	//
 
-	for i, privateKey := range transaction.Signatures.Items {
-		start := i*ed25519.PrivateKeySize + 1
-		end := (i+1)*ed25519.PrivateKeySize + 1
-		signature := ed25519.Sign(privateKey.(ed25519.PrivateKey), message)
+	// allBytes := buffer.Bytes()
+	// signatureCutoff := transaction.Signatures.Length*ed25519.PrivateKeySize + 1
 
-		copy(signatures[start:end], signature)
-	}
+	// signatures := allBytes[:signatureCutoff]
+	// message := allBytes[signatureCutoff:]
 
-	return base64.StdEncoding.EncodeToString(allBytes)
+	// for i, privateKey := range transaction.Signatures.Items {
+	// 	start := i*ed25519.PrivateKeySize + 1
+	// 	end := (i+1)*ed25519.PrivateKeySize + 1
+	// 	signature := ed25519.Sign(privateKey.(ed25519.PrivateKey), message)
+
+	// 	copy(signatures[start:end], signature)
+	// }
+
+	// return base64.StdEncoding.EncodeToString(allBytes)
+
+	return "TODO"
 }

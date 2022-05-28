@@ -22,16 +22,6 @@ type Keypair struct {
 	PrivateKey PrivateKey
 }
 
-type Account struct {
-	Read    bool
-	Write   bool
-	Signer  bool
-	Keypair Keypair
-}
-
-const SizeOfMintAccount = 82
-const SizeOfMultisigAccount = 355
-
 var PDAMarker = []byte("ProgramDerivedAddress")
 
 func NewPublicKey(key string) PublicKey {

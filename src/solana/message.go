@@ -35,29 +35,11 @@ func getMessageHeaderFromAccounts(accounts []Account) MessageHeader {
 	}
 }
 
-func NewAccountAddresses(publicKeys ...PublicKey) CompactArray {
-	numKeys := uint16(len(publicKeys))
-	keysGeneric := make([]any, numKeys)
-
-	for i, key := range publicKeys {
-		keysGeneric[i] = key
-	}
-
-	return CompactArray{numKeys, keysGeneric}
-}
-
 type Message struct {
 	Header           MessageHeader
 	AccountAddresses CompactArray
 	RecentBlockhash  RecentBlockhash
 	Instructions     CompactArray
-}
-
-func (client *JSONRPCClient) NewMessage(accounts []Account, instructions []Instruction) Message {
-	return Message{
-		Header:          getMessageHeaderFromAccounts(accounts),
-		RecentBlockhash: client.GetRecentBlockhash(),
-	}
 }
 
 type RecentBlockhash []byte
