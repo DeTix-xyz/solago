@@ -1,11 +1,14 @@
 package solana
 
-import "bytes"
+type Instruction struct {
+	ProgramIDIndex        uint8
+	AccountAddressIndexes CompactArray[uint8]
+	Data                  CompactArray[byte]
+}
 
-type Instruction interface {
-	Size() int
+type instruction interface {
 	ProgramIDIndex([]Account) uint8
-	AccountAddressIndexes([]Account) CompactArray
+	AccountAddressIndexes([]Account) CompactArray[uint8]
 	CollectAccounts() []Account
-	Serialize(buffer *bytes.Buffer) *bytes.Buffer
+	Data() CompactArray[byte]
 }

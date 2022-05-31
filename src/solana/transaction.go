@@ -1,12 +1,12 @@
 package solana
 
 type Transaction struct {
-	Signatures CompactArray
+	Signatures CompactArray[PrivateKey]
 	Message    Message
 }
 
-func getSignaturesFromAccounts(accounts []Account) CompactArray {
-	signatures := []any{}
+func getSignaturesFromAccounts(accounts []Account) CompactArray[PrivateKey] {
+	signatures := []PrivateKey{}
 
 	for _, account := range accounts {
 		if account.Signer {
@@ -14,7 +14,7 @@ func getSignaturesFromAccounts(accounts []Account) CompactArray {
 		}
 	}
 
-	return CompactArray{uint16(len(signatures)), signatures}
+	return CompactArray[PrivateKey]{uint16(len(signatures)), signatures}
 }
 
 func (transaction *Transaction) Sign(accounts []Account) string {

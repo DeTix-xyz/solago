@@ -37,9 +37,9 @@ func getMessageHeaderFromAccounts(accounts []Account) MessageHeader {
 
 type Message struct {
 	Header           MessageHeader
-	AccountAddresses CompactArray
+	AccountAddresses CompactArray[PublicKey]
 	RecentBlockhash  RecentBlockhash
-	Instructions     CompactArray
+	Instructions     CompactArray[Instruction]
 }
 
 type RecentBlockhash []byte
