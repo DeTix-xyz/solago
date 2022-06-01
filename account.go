@@ -40,10 +40,8 @@ func (accounts AccountCollection) Sort() AccountCollection {
 
 		if bothSigners || neitherSigners {
 			return aIsReadWrite || bIsReadOnly
-		} else if aIsSigner {
-			return true
 		} else {
-			return false
+			return aIsSigner
 		}
 	})
 
