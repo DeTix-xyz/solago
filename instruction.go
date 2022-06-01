@@ -15,7 +15,7 @@ type InProcessInstruction interface {
 
 type InProcessInstructionCollection []InProcessInstruction
 
-func (collection InProcessInstructionCollection) CollectAccounts() []Account {
+func (collection InProcessInstructionCollection) CollectAccounts() AccountCollection {
 	accounts := []Account{}
 
 	for _, entry := range collection {

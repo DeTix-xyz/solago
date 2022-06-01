@@ -29,6 +29,16 @@ func NewReadOnlyAccount(keypair Keypair) Account {
 
 type AccountCollection []Account
 
+func (accounts AccountCollection) MapToPublicKeys() []PublicKey {
+	keys := []PublicKey{}
+
+	for _, account := range accounts {
+		keys = append(keys, account.Keypair.PublicKey)
+	}
+
+	return keys
+}
+
 func (accounts AccountCollection) Sort() AccountCollection {
 	sort.SliceStable(accounts, func(a, b int) bool {
 		aIsSigner := accounts[a].Signer
