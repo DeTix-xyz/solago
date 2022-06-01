@@ -1,5 +1,7 @@
 package solago
 
+import "sort"
+
 type Account struct {
 	Read    bool
 	Write   bool
@@ -23,6 +25,29 @@ func NewReadOnlyAccount(keypair Keypair) Account {
 		Signer:  false,
 		Keypair: keypair,
 	}
+}
+
+type AccountCollection []Account
+
+func (accounts AccountCollection) Sort() AccountCollection {
+	sort.SliceStable(accounts, func(a, b int) bool {
+		aIsSigner := accounts[a].Signer
+		bIsSigner := accounts[b].Signer
+		bIsReadOnly := accounts[b].Read && !accounts[b].Write
+		aIsReadWrite := accounts[a].Read && accounts[a].Write
+		bothSigners := aIsSigner && bIsSigner
+		neitherSigners := !aIsSigner && !bIsSigner
+
+		if bothSigners || neitherSigners {
+			return aIsReadWrite || bIsReadOnly
+		} else if aIsSigner {
+			return true
+		} else {
+			return false
+		}
+	})
+
+	return accounts
 }
 
 const SizeOfMintAccount = 82

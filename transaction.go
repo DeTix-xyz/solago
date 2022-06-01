@@ -13,7 +13,7 @@ type InProcessTransaction struct {
 	Client  Client
 }
 
-func NewTransaction(client Client, instructions ...InProcessInstruction) InProcessInstruction {
+func NewTransaction(client Client, instructions ...InProcessInstruction) InProcessTransaction {
 	return InProcessTransaction{
 		Buffer:  new(bytes.Buffer),
 		Message: NewMessage(client.GetRecentBlockhash(), instructions),

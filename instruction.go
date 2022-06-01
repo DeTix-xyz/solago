@@ -12,3 +12,15 @@ type InProcessInstruction interface {
 	CollectAccounts() []Account
 	Data() CompactArray[byte]
 }
+
+type InProcessInstructionCollection []InProcessInstruction
+
+func (collection InProcessInstructionCollection) CollectAccounts() []Account {
+	accounts := []Account{}
+
+	for _, entry := range collection {
+		accounts = append(accounts, entry.CollectAccounts()...)
+	}
+
+	return accounts
+}

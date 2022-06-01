@@ -42,10 +42,15 @@ type Message struct {
 	Instructions     CompactArray[Instruction]
 }
 
-func NewMessage(blockhash RecentBlockhash, instructions ...InProcessInstruction) Message {
-	// Gather all accounts
+func NewMessage(blockhash RecentBlockhash, instructions InProcessInstructionCollection) Message {
+	accounts := instructions.CollectAccounts()
+
 	return Message{
 		RecentBlockhash: blockhash,
+		Header:          NewMessageHeaderFromAccounts(accounts),
+		AccountAddresses: CompactArray[PublicKey]{
+			uint16(len(accounts)),
+		},
 	}
 }
 
