@@ -1,7 +1,5 @@
 package metadata
 
-import "github.com/DeTix-xyz/solago/src/sdk/account"
-
 type Creator struct {
 	Address  account.PublicKey
 	Verified bool

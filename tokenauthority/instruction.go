@@ -1,4 +1,4 @@
-package tokenauth
+package tokenauthority
 
 type TokenAuthorityType uint8
 

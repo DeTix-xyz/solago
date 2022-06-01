@@ -1,4 +1,4 @@
-package solana
+package system
 
 import (
 	"bytes"
@@ -6,23 +6,6 @@ import (
 )
 
 var SystemAccount = NewReadOnlyAccount(Keypair{PublicKey: SystemProgramAccount})
-
-type SystemInstruction uint32
-
-const (
-	CreateAccount SystemInstruction = iota
-	Assign
-	Transfer
-	CreateAccountWithSeed
-	AdvanceNonceAccount
-	WithdrawNonceAccount
-	InitializeNonceAccount
-	AuthorizeNonceAccount
-	Allocate
-	AllocateWithSeed
-	AssignWithSeed
-	TransferWithSeed
-)
 
 type CreateAccountInstruction struct {
 	Payer      Keypair
@@ -37,7 +20,13 @@ func (instruction *CreateAccountInstruction) ProgramIDIndex(accounts []Account) 
 }
 
 func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts []Account) CompactArray[uint8] {
-	return CompactArray[uint8]{}
+	indexes := indexOf(
+		accounts,
+		NewSignerAccount(instruction.Payer),
+		NewSignerAccount(instruction.NewAccount),
+	)
+
+	return CompactArray[uint8]{uint16(len(indexes)), indexes}
 }
 
 func (instruction *CreateAccountInstruction) CollectAccounts() []Account {
