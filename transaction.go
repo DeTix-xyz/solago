@@ -1,23 +1,27 @@
 package solago
 
+import "bytes"
+
 type Transaction struct {
 	Signatures CompactArray[PrivateKey]
 	Message    Message
 }
 
-func getSignaturesFromAccounts(accounts []Account) CompactArray[PrivateKey] {
-	signatures := []PrivateKey{}
-
-	for _, account := range accounts {
-		if account.Signer {
-			signatures = append(signatures, account.Keypair.PrivateKey)
-		}
-	}
-
-	return CompactArray[PrivateKey]{uint16(len(signatures)), signatures}
+type InProcessTransaction struct {
+	Buffer  *bytes.Buffer
+	Message Message
+	Client  Client
 }
 
-func (transaction *Transaction) Sign(accounts []Account) string {
+func NewTransaction(client Client, instructions ...InProcessInstruction) InProcessInstruction {
+	return InProcessTransaction{
+		Buffer:  new(bytes.Buffer),
+		Message: NewMessage(client.GetRecentBlockhash(), instructions),
+		Client:  client,
+	}
+}
+
+func (transaction InProcessTransaction) Sign(accounts ...Account) InProcessTransaction {
 
 	//
 	// NEEDS to compute message header
@@ -39,5 +43,5 @@ func (transaction *Transaction) Sign(accounts []Account) string {
 
 	// return base64.StdEncoding.EncodeToString(allBytes)
 
-	return "TODO"
+	return nil
 }

@@ -10,7 +10,7 @@ type MessageHeader struct {
 	NumberReadOnlyUnsignedAccounts uint8
 }
 
-func getMessageHeaderFromAccounts(accounts []Account) MessageHeader {
+func NewMessageHeaderFromAccounts(accounts []Account) MessageHeader {
 	numRequiredSignatures := uint8(0)
 	numReadOnlySigned := uint8(0)
 	numReadOnlyUnsigned := uint8(0)
@@ -40,6 +40,13 @@ type Message struct {
 	AccountAddresses CompactArray[PublicKey]
 	RecentBlockhash  RecentBlockhash
 	Instructions     CompactArray[Instruction]
+}
+
+func NewMessage(blockhash RecentBlockhash, instructions ...InProcessInstruction) Message {
+	// Gather all accounts
+	return Message{
+		RecentBlockhash: blockhash,
+	}
 }
 
 type RecentBlockhash []byte

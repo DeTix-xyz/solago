@@ -1,7 +1,6 @@
 package test
 
 import (
-	"bytes"
 	"fmt"
 	"testing"
 
@@ -18,17 +17,19 @@ func TestCreateAccount2(t *testing.T) {
 
 	// Transaction to create account
 	client := solago.NewClient("https://api.devnet.solana.com", nil)
-	
-	signedTransaction := client.
-		NewTransaction(system.CreateAccountInstruction{
-			Payer:      *payer,
-			NewAccount: *newAccount,
-			Lamports:   1_000_000_000 / 10,
-			Space:      32,
-			Owner:      payer.PublicKey,
-		})
-		.Sign(payer.PrivateKey, newnewAccount.PrivateKey)
 
+	solago.
+		NewTransaction(client,
+			system.CreateAccountInstruction{
+				Payer:      *payer,
+				NewAccount: *newAccount,
+				Lamports:   1_000_000_000 / 10,
+				Space:      32,
+				Owner:      payer.PublicKey,
+			},
+		).
+		Sign(payer.PrivateKey, newAccount.PrivateKey).
+		Send()
 
 	fmt.Println(signedTransaction)
 
@@ -45,4 +46,3 @@ func TestCreateAccount2(t *testing.T) {
 	//  112 183 1 2 2 0 1 52 0 0 0 0 0 225 245 5 0 0 0 0 32
 	//  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 }
-

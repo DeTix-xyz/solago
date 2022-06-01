@@ -12,42 +12,42 @@ import (
 
 const JSON_RPC_VERSION = "2.0"
 
-type JSONRPCRequest struct {
+type Request struct {
 	Version string `json:"jsonrpc"`
 	ID      string `json:"id"`
 	Method  string `json:"method"`
 	Params  any    `json:"params,omitempty"`
 }
 
-type JSONRPCResponse struct {
-	Version string        `json:"jsonrpc"`
-	ID      string        `json:"id"`
-	Error   *JSONRPCError `json:"error,omitempty"`
+type Response struct {
+	Version string `json:"jsonrpc"`
+	ID      string `json:"id"`
+	Error   *Error `json:"error,omitempty"`
 }
 
-type JSONRPCError struct {
+type Error struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    any    `json:"data,omitempty"`
 }
 
-type JSONRPCClient struct {
+type Client struct {
 	endpoint string
 	client   *http.Client
 	context  context.Context
 	headers  map[string]string
 }
 
-func NewClient(endpoint string, headers map[string]string) *JSONRPCClient {
+func NewClient(endpoint string, headers map[string]string) *Client {
 	if headers == nil {
-		return &JSONRPCClient{
+		return &Client{
 			endpoint: endpoint,
 			client:   &http.Client{},
 			context:  context.Background(),
 			headers:  map[string]string{},
 		}
 	} else {
-		return &JSONRPCClient{
+		return &Client{
 			endpoint: endpoint,
 			client:   &http.Client{},
 			context:  context.Background(),
@@ -56,14 +56,14 @@ func NewClient(endpoint string, headers map[string]string) *JSONRPCClient {
 	}
 }
 
-func (jrpc *JSONRPCClient) newHTTPRequest(RPCRequest *JSONRPCRequest) (*http.Request, error) {
+func (client *Client) newHTTPRequest(RPCRequest *Request) (*http.Request, error) {
 	body, err := json.Marshal(RPCRequest)
 
 	if err != nil {
 		return nil, err
 	}
 
-	request, err := http.NewRequestWithContext(jrpc.context, "POST", jrpc.endpoint, bytes.NewReader(body))
+	request, err := http.NewRequestWithContext(client.context, "POST", client.endpoint, bytes.NewReader(body))
 
 	if err != nil {
 		return nil, err
@@ -72,21 +72,21 @@ func (jrpc *JSONRPCClient) newHTTPRequest(RPCRequest *JSONRPCRequest) (*http.Req
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "application/json")
 
-	for header, value := range jrpc.headers {
+	for header, value := range client.headers {
 		request.Header.Set(header, value)
 	}
 
 	return request, nil
 }
 
-func (jrpc *JSONRPCClient) Call(RPCRequest *JSONRPCRequest) ([]byte, error) {
-	HTTPRequest, err := jrpc.newHTTPRequest(RPCRequest)
+func (client *Client) Call(RPCRequest *Request) ([]byte, error) {
+	HTTPRequest, err := client.newHTTPRequest(RPCRequest)
 
 	if err != nil {
 		return nil, err
 	}
 
-	HTTPResponse, err := jrpc.client.Do(HTTPRequest)
+	HTTPResponse, err := client.client.Do(HTTPRequest)
 
 	if err != nil {
 		return nil, err
@@ -97,9 +97,9 @@ func (jrpc *JSONRPCClient) Call(RPCRequest *JSONRPCRequest) ([]byte, error) {
 	return io.ReadAll(HTTPResponse.Body)
 }
 
-func (jrpc *JSONRPCClient) GetRecentBlockhash() RecentBlockhash {
-	responseBytes, _ := jrpc.Call(
-		&JSONRPCRequest{
+func (client *Client) GetRecentBlockhash() RecentBlockhash {
+	responseBytes, _ := client.Call(
+		&Request{
 			Version: JSON_RPC_VERSION,
 			ID:      uuid.NewString(),
 			Method:  "getLatestBlockhash",
@@ -110,7 +110,7 @@ func (jrpc *JSONRPCClient) GetRecentBlockhash() RecentBlockhash {
 	)
 
 	blockhashResponse := &struct {
-		JSONRPCResponse
+		Response
 		Result struct {
 			Context struct {
 				Slot int `json:"slot"`

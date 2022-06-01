@@ -6,7 +6,7 @@ type Instruction struct {
 	Data                  CompactArray[byte]
 }
 
-type PreInstruction interface {
+type InProcessInstruction interface {
 	ProgramIDIndex([]Account) uint8
 	AccountAddressIndexes([]Account) CompactArray[uint8]
 	CollectAccounts() []Account
