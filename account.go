@@ -30,7 +30,6 @@ const SizeOfMultisigAccount = 355
 
 var (
 	NilPublicKey                     = NewPublicKey("11111111111111111111111111111111")
-	SystemProgramAccount             = NewPublicKey("11111111111111111111111111111111")
 	RentProgram                      = NewPublicKey("SysvarRent111111111111111111111111111111111")
 	ConfigProgram                    = NewPublicKey("Config1111111111111111111111111111111111111")
 	StakeProgram                     = NewPublicKey("Stake11111111111111111111111111111111111111")

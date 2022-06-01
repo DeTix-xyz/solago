@@ -122,7 +122,7 @@ func (jrpc *JSONRPCClient) GetRecentBlockhash() RecentBlockhash {
 		} `json:"result"`
 	}{}
 
-	json.Unmarshal(responseBytes, &blockhashResponse)
+	json.Unmarshal(responseBytes, blockhashResponse)
 
 	return RecentBlockhashFromString(blockhashResponse.Result.Value.Blockhash)
 }
