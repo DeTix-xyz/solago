@@ -1,4 +1,4 @@
-package solana
+package solago
 
 import (
 	"github.com/mr-tron/base58"

@@ -1,4 +1,4 @@
-package solana
+package solago
 
 type Instruction struct {
 	ProgramIDIndex        uint8

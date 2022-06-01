@@ -3,41 +3,49 @@ package system
 import (
 	"bytes"
 	"encoding/binary"
+
+	"github.com/DeTix-xyz/solago"
+	"github.com/DeTix-xyz/solago/utils"
 )
 
-var SystemAccount = NewReadOnlyAccount(Keypair{PublicKey: SystemProgramAccount})
+var SystemAccount = solago.NewReadOnlyAccount(
+	solago.Keypair{PublicKey: SystemProgramAccount},
+)
 
 type CreateAccountInstruction struct {
-	Payer      Keypair
-	NewAccount Keypair
+	Payer      solago.Keypair
+	NewAccount solago.Keypair
 	Lamports   uint64
 	Space      uint64
-	Owner      PublicKey
+	Owner      solago.PublicKey
 }
 
-func (instruction *CreateAccountInstruction) ProgramIDIndex(accounts []Account) uint8 {
-	return indexOf(accounts, SystemAccount)[0]
+func (instruction *CreateAccountInstruction) ProgramIDIndex(accounts []solago.Account) uint8 {
+	return utils.IndexOf(accounts, SystemAccount)[0]
 }
 
-func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts []Account) CompactArray[uint8] {
-	indexes := indexOf(
+func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts []solago.Account) solago.CompactArray[uint8] {
+	indexes := utils.IndexOf(
 		accounts,
-		NewSignerAccount(instruction.Payer),
-		NewSignerAccount(instruction.NewAccount),
+		solago.NewSignerAccount(instruction.Payer),
+		solago.NewSignerAccount(instruction.NewAccount),
 	)
 
-	return CompactArray[uint8]{uint16(len(indexes)), indexes}
+	return solago.CompactArray[uint8]{
+		Length: uint16(len(indexes)),
+		Items:  indexes,
+	}
 }
 
-func (instruction *CreateAccountInstruction) CollectAccounts() []Account {
-	return []Account{
-		NewSignerAccount(instruction.Payer),
-		NewSignerAccount(instruction.NewAccount),
+func (instruction *CreateAccountInstruction) CollectAccounts() []solago.Account {
+	return []solago.Account{
+		solago.NewSignerAccount(instruction.Payer),
+		solago.NewSignerAccount(instruction.NewAccount),
 		SystemAccount,
 	}
 }
 
-func (instruction *CreateAccountInstruction) Data() CompactArray[byte] {
+func (instruction *CreateAccountInstruction) Data() solago.CompactArray[byte] {
 	buffer := new(bytes.Buffer)
 
 	binary.Write(buffer, binary.LittleEndian, CreateAccount)
@@ -47,5 +55,8 @@ func (instruction *CreateAccountInstruction) Data() CompactArray[byte] {
 
 	bytes := buffer.Bytes()
 
-	return CompactArray[byte]{uint16(len(bytes)), bytes}
+	return solago.CompactArray[byte]{
+		Length: uint16(len(bytes)),
+		Items:  bytes,
+	}
 }

@@ -1,4 +1,4 @@
-package solana
+package solago
 
 type Account struct {
 	Read    bool

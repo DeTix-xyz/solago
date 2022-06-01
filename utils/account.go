@@ -1,8 +1,12 @@
-package solana
+package utils
 
-import "reflect"
+import (
+	"reflect"
 
-func indexOf[T Account](elements []T, targets ...T) []uint8 {
+	"github.com/DeTix-xyz/solago"
+)
+
+func IndexOf[T solago.Account](elements []T, targets ...T) []uint8 {
 	indices := []uint8{}
 
 	for index, element := range elements {
