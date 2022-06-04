@@ -43,16 +43,13 @@ type Message struct {
 }
 
 func NewMessage(blockhash RecentBlockhash, instructions InProcessInstructionCollection) Message {
-	accounts := instructions.CollectAccounts().Sort()
+	sortedAccounts := instructions.CollectAccounts().Sort()
 
 	return Message{
-		RecentBlockhash: blockhash,
-		Header:          NewMessageHeaderFromAccounts(accounts),
-		AccountAddresses: CompactArray[PublicKey]{
-			uint16(len(accounts)),
-			accounts.MapToPublicKeys(),
-		},
-		// Map over instructions
+		RecentBlockhash:  blockhash,
+		Header:           NewMessageHeaderFromAccounts(sortedAccounts),
+		AccountAddresses: NewCompactArray(sortedAccounts.MapToPublicKeys()...),
+		Instructions:     NewCompactArray(instructions.MapToRaw()...),
 	}
 }
 
