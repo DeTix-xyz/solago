@@ -16,14 +16,31 @@ import (
 )
 
 type PublicKey ed25519.PublicKey
-type PrivateKey ed25519.PrivateKey
 
-func (key *PrivateKey) Serialize(buffer *bytes.Buffer) {
+func (key PublicKey) Serialize(buffer *bytes.Buffer) {
 	binary.Write(buffer, binary.LittleEndian, key)
 }
 
-func (key *PublicKey) Serialize(buffer *bytes.Buffer) {
+type PrivateKey ed25519.PrivateKey
+
+func (key PrivateKey) Serialize(buffer *bytes.Buffer) {
 	binary.Write(buffer, binary.LittleEndian, key)
+}
+
+type PublicKeys []PublicKey
+
+func (keys PublicKeys) Serialize(buffer *bytes.Buffer) {
+	for _, key := range keys {
+		key.Serialize(buffer)
+	}
+}
+
+type PrivateKeys []PrivateKey
+
+func (keys PrivateKeys) Serialize(buffer *bytes.Buffer) {
+	for _, key := range keys {
+		key.Serialize(buffer)
+	}
 }
 
 type Keypair struct {

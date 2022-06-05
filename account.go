@@ -11,6 +11,9 @@ type Account struct {
 
 type AccountList []Account
 
+const SizeOfMintAccount = 82
+const SizeOfMultisigAccount = 355
+
 func NewSignerAccount(keypair Keypair) Account {
 	return Account{
 		Read:    true,
@@ -29,18 +32,33 @@ func NewReadOnlyAccount(keypair Keypair) Account {
 	}
 }
 
-func (accounts *AccountCollection) MapToKeys(private bool) []Serializable {
-	keys := []Serializable{}
+func NewReadWriteAccount(keypair Keypair) Account {
+	return Account{
+		Read:    true,
+		Write:   true,
+		Signer:  false,
+		Keypair: keypair,
+	}
+}
 
-	for _, account := range *accounts {
-		if private {
-			keys = append(keys, account.Keypair.PrivateKey)
-		} else {
-			keys = append(keys, account.Keypair.PublicKey)
-		}
+func (accounts AccountList) ToPublicKeys() PublicKeys {
+	publicKeys := PublicKeys{}
+
+	for _, account := range accounts {
+		publicKeys = append(publicKeys, account.Keypair.PublicKey)
 	}
 
-	return keys
+	return publicKeys
+}
+
+func (accounts AccountList) ToPrivateKeys() PrivateKeys {
+	publicKeys := PrivateKeys{}
+
+	for _, account := range accounts {
+		publicKeys = append(publicKeys, account.Keypair.PrivateKey)
+	}
+
+	return publicKeys
 }
 
 func (accounts AccountList) Sort() AccountList {
@@ -57,22 +75,3 @@ func (accounts AccountList) Sort() AccountList {
 
 	return accounts
 }
-
-const SizeOfMintAccount = 82
-const SizeOfMultisigAccount = 355
-
-var (
-	NilPublicKey                     = NewPublicKey("11111111111111111111111111111111")
-	RentProgram                      = NewPublicKey("SysvarRent111111111111111111111111111111111")
-	ConfigProgram                    = NewPublicKey("Config1111111111111111111111111111111111111")
-	StakeProgram                     = NewPublicKey("Stake11111111111111111111111111111111111111")
-	VoteProgram                      = NewPublicKey("Vote111111111111111111111111111111111111111")
-	BPFLoaderProgram                 = NewPublicKey("BPFLoader1111111111111111111111111111111111")
-	Secp256k1Program                 = NewPublicKey("KeccakSecp256k11111111111111111111111111111")
-	TokenProgram                     = NewPublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
-	MemoProgram                      = NewPublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr")
-	SPLAssociatedTokenAccountProgram = NewPublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL")
-	SPLNameServiceProgram            = NewPublicKey("namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8cawRkX")
-	MetaplexTokenMetaProgram         = NewPublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s")
-	ComputeBudgetProgram             = NewPublicKey("ComputeBudget111111111111111111111111111111")
-)
