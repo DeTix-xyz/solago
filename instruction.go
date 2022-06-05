@@ -11,7 +11,7 @@ type Instruction struct {
 	Data                  CompactArray
 }
 
-func (instruction Instruction) Serialize(buffer *bytes.Buffer) {
+func (instruction *Instruction) Serialize(buffer *bytes.Buffer) {
 	binary.Write(buffer, binary.LittleEndian, instruction.ProgramIDIndex)
 	instruction.AccountAddressIndexes.Serialize(buffer)
 	instruction.Data.Serialize(buffer)

@@ -56,7 +56,9 @@ func NewPublicKey(key string) PublicKey {
 }
 
 func PublicKeyFromPrivateKey(private PrivateKey) PublicKey {
-	return ed25519.PrivateKey(private).Public().(PublicKey)
+	publicKey, _ := ed25519.PrivateKey(private).Public().(ed25519.PublicKey)
+
+	return PublicKey(publicKey)
 }
 
 func NewPrivateKey(key string) PrivateKey {
