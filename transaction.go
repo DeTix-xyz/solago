@@ -22,9 +22,9 @@ func NewTransaction(client rpc.Client, instructions ...PseudoInstruction) Transa
 	}
 }
 
-func (transaction Transaction) SignAndSend(accounts AccountList) string {
+func (transaction Transaction) SignAndSend(signers ...PrivateKey) string {
 	// Write private keys for subsequent signature
-	privateKeys := accounts.ToPrivateKeys()
+	privateKeys := PrivateKeys(signers)
 	privateKeys.Serialize(transaction.Buffer)
 
 	// Serialize message
@@ -32,7 +32,7 @@ func (transaction Transaction) SignAndSend(accounts AccountList) string {
 
 	// Sign the message
 	allBytes := transaction.Buffer.Bytes()
-	signatureCutoff := len(accounts)*ed25519.PrivateKeySize + 1
+	signatureCutoff := len(signers)*ed25519.PrivateKeySize + 1
 
 	signatures := allBytes[:signatureCutoff]
 	message := allBytes[signatureCutoff:]
