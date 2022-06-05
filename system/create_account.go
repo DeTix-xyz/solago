@@ -24,20 +24,17 @@ func (instruction *CreateAccountInstruction) ProgramIDIndex(accounts []solago.Ac
 	return utils.IndexOf(accounts, SystemAccount)[0]
 }
 
-func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts []solago.Account) solago.CompactArray[uint8] {
+func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts []solago.Account) solago.CompactArray {
 	indexes := utils.IndexOf(
 		accounts,
 		solago.NewSignerAccount(instruction.Payer),
 		solago.NewSignerAccount(instruction.NewAccount),
 	)
 
-	return solago.CompactArray[uint8]{
-		Length: uint16(len(indexes)),
-		Items:  indexes,
-	}
+	return solago.NewCompactArray(indexes)
 }
 
-func (instruction *CreateAccountInstruction) CollectAccounts() []solago.Account {
+func (instruction *CreateAccountInstruction) CollectAccounts() solago.AccountList {
 	return []solago.Account{
 		solago.NewSignerAccount(instruction.Payer),
 		solago.NewSignerAccount(instruction.NewAccount),
@@ -45,7 +42,7 @@ func (instruction *CreateAccountInstruction) CollectAccounts() []solago.Account 
 	}
 }
 
-func (instruction *CreateAccountInstruction) Data() solago.CompactArray[byte] {
+func (instruction *CreateAccountInstruction) Data() solago.CompactArray {
 	buffer := new(bytes.Buffer)
 
 	binary.Write(buffer, binary.LittleEndian, CreateAccount)
@@ -53,5 +50,7 @@ func (instruction *CreateAccountInstruction) Data() solago.CompactArray[byte] {
 	binary.Write(buffer, binary.LittleEndian, instruction.Space)
 	binary.Write(buffer, binary.LittleEndian, instruction.Owner)
 
-	return solago.NewCompactArray(buffer.Bytes()...)
+	var bytes solago.ByteList = buffer.Bytes()
+
+	return solago.NewCompactArray(bytes)
 }

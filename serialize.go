@@ -2,10 +2,17 @@ package solago
 
 import (
 	"bytes"
+	"encoding/binary"
 )
 
 type Serializable interface {
 	Serialize(*bytes.Buffer)
+}
+
+type ByteList []byte
+
+func (bytes ByteList) Serialize(buffer *bytes.Buffer) {
+	binary.Write(buffer, binary.LittleEndian, bytes)
 }
 
 /**

@@ -6,7 +6,7 @@ import (
 	"github.com/DeTix-xyz/solago"
 )
 
-func IndexOf[T solago.Account](elements []T, targets ...T) []uint8 {
+func IndexOf[T solago.Account](elements []T, targets ...T) solago.AccountIndexes {
 	indices := []uint8{}
 
 	for index, element := range elements {

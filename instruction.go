@@ -5,20 +5,14 @@ import (
 	"encoding/binary"
 )
 
-type ProgramIDIndex uint8
-
-func (index ProgramIDIndex) Serialize(buffer *bytes.Buffer) {
-	binary.Write(buffer, binary.LittleEndian, index)
-}
-
 type Instruction struct {
-	ProgramIDIndex        ProgramIDIndex
+	ProgramIDIndex        uint8
 	AccountAddressIndexes CompactArray
 	Data                  CompactArray
 }
 
 func (instruction Instruction) Serialize(buffer *bytes.Buffer) {
-	instruction.ProgramIDIndex.Serialize(buffer)
+	binary.Write(buffer, binary.LittleEndian, instruction.ProgramIDIndex)
 	instruction.AccountAddressIndexes.Serialize(buffer)
 	instruction.Data.Serialize(buffer)
 }
@@ -32,9 +26,9 @@ func (instructions InstructionList) Serialize(buffer *bytes.Buffer) {
 }
 
 type PseudoInstruction interface {
-	ProgramIDIndex([]Account) ProgramIDIndex
-	AccountAddressIndexes([]Account) CompactArray
-	CollectAccounts() []Account
+	ProgramIDIndex(AccountList) uint8
+	AccountAddressIndexes(AccountList) CompactArray
+	CollectAccounts() AccountList
 	Data() CompactArray
 }
 

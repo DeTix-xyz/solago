@@ -1,6 +1,10 @@
 package solago
 
-import "sort"
+import (
+	"bytes"
+	"encoding/binary"
+	"sort"
+)
 
 type Account struct {
 	Read    bool
@@ -10,6 +14,14 @@ type Account struct {
 }
 
 type AccountList []Account
+
+type AccountIndexes []uint8
+
+func (indexes AccountIndexes) Serialize(buffer *bytes.Buffer) {
+	for _, index := range indexes {
+		binary.Write(buffer, binary.LittleEndian, index)
+	}
+}
 
 const SizeOfMintAccount = 82
 const SizeOfMultisigAccount = 355
