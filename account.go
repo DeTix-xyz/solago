@@ -53,27 +53,29 @@ func NewReadWriteAccount(keypair Keypair) Account {
 	}
 }
 
-func (accounts AccountList) ToPublicKeys() PublicKeys {
+func (accounts *AccountList) ToPublicKeys() PublicKeys {
 	publicKeys := PublicKeys{}
 
-	for _, account := range accounts {
+	for _, account := range *accounts {
 		publicKeys = append(publicKeys, account.Keypair.PublicKey)
 	}
 
 	return publicKeys
 }
 
-func (accounts AccountList) ToPrivateKeys() PrivateKeys {
+func (accounts *AccountList) ToPrivateKeys() PrivateKeys {
 	publicKeys := PrivateKeys{}
 
-	for _, account := range accounts {
+	for _, account := range *accounts {
 		publicKeys = append(publicKeys, account.Keypair.PrivateKey)
 	}
 
 	return publicKeys
 }
 
-func (accounts AccountList) Sort() AccountList {
+func (accountsRef *AccountList) Sort() AccountList {
+	accounts := *accountsRef
+
 	sort.SliceStable(accounts, func(a, b int) bool {
 		bothSigners := accounts[a].Signer && accounts[b].Signer
 		neitherSigners := !accounts[a].Signer && !accounts[b].Signer
