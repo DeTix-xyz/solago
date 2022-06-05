@@ -10,7 +10,7 @@ type Account struct {
 	Read    bool
 	Write   bool
 	Signer  bool
-	Keypair Keypair
+	Keypair *Keypair
 }
 
 type AccountList []Account
@@ -26,7 +26,7 @@ func (indexes AccountIndexes) Serialize(buffer *bytes.Buffer) {
 const SizeOfMintAccount = 82
 const SizeOfMultisigAccount = 355
 
-func NewSignerAccount(keypair Keypair) Account {
+func NewSignerAccount(keypair *Keypair) Account {
 	return Account{
 		Read:    true,
 		Write:   true,
@@ -35,7 +35,7 @@ func NewSignerAccount(keypair Keypair) Account {
 	}
 }
 
-func NewReadOnlyAccount(keypair Keypair) Account {
+func NewReadOnlyAccount(keypair *Keypair) Account {
 	return Account{
 		Read:    true,
 		Write:   false,
@@ -44,7 +44,7 @@ func NewReadOnlyAccount(keypair Keypair) Account {
 	}
 }
 
-func NewReadWriteAccount(keypair Keypair) Account {
+func NewReadWriteAccount(keypair *Keypair) Account {
 	return Account{
 		Read:    true,
 		Write:   true,
