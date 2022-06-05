@@ -57,7 +57,7 @@ func NewMessage(blockhash RecentBlockhash, pseudoInstructions PseudoInstructionL
 	return Message{
 		RecentBlockhash:  blockhash,
 		Header:           NewMessageHeaderFromAccounts(accounts),
-		AccountAddresses: NewCompactArray(accounts.PublicKeys()),
+		AccountAddresses: NewCompactArray(accounts.ToPublicKeys()),
 		Instructions:     NewCompactArray(pseudoInstructions.NewInstructionList(accounts)),
 	}
 }
