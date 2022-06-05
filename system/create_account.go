@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 
-	"github.com/DeTix-xyz/solago"
-	"github.com/DeTix-xyz/solago/utils"
+	"github.com/deezdegens/solago"
+	"github.com/deezdegens/solago/utils"
 )
 
 var SystemAccount = solago.NewReadOnlyAccount(
@@ -20,11 +20,11 @@ type CreateAccountInstruction struct {
 	Owner      solago.PublicKey
 }
 
-func (instruction *CreateAccountInstruction) ProgramIDIndex(accounts []solago.Account) uint8 {
+func (instruction *CreateAccountInstruction) ProgramIDIndex(accounts solago.AccountList) uint8 {
 	return utils.IndexOf(accounts, SystemAccount)[0]
 }
 
-func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts []solago.Account) solago.CompactArray {
+func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts solago.AccountList) solago.CompactArray {
 	indexes := utils.IndexOf(
 		accounts,
 		solago.NewSignerAccount(instruction.Payer),
@@ -35,7 +35,7 @@ func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts []so
 }
 
 func (instruction *CreateAccountInstruction) CollectAccounts() solago.AccountList {
-	return []solago.Account{
+	return solago.AccountList{
 		solago.NewSignerAccount(instruction.Payer),
 		solago.NewSignerAccount(instruction.NewAccount),
 		SystemAccount,

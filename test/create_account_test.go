@@ -1,58 +1,35 @@
 package test
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"testing"
 
-	"github.com/DeTix-xyz/solago/src/rpc"
-	"github.com/DeTix-xyz/solago/src/sdk"
-	"github.com/DeTix-xyz/solago/src/sdk/account"
-	"github.com/DeTix-xyz/solago/src/sdk/solana"
-	"github.com/google/uuid"
+	"github.com/deezdegens/solago"
+	"github.com/deezdegens/solago/rpc"
+	"github.com/deezdegens/solago/system"
 )
 
-func TestCreateAccount(t *testing.T) {
+func TestCreateAccount2(t *testing.T) {
 	// Sugar daddy
-	payer := account.NewKeypairFromFile("/Users/trumanpurnell/.config/solana/id.json")
+	payer := solago.NewKeypairFromFile("/Users/trumanpurnell/.config/solana/id.json")
 
 	// New account to be created
-	newAccount := account.NewKeypairFromSeed([32]byte{})
+	newAccount := solago.NewKeypairFromSeed([32]byte{})
 
 	// Transaction to create account
-	transaction := solana.Transaction{
-		Signatures: solana.NewSignatures(payer.PrivateKey, newAccount.PrivateKey),
-		Message: solana.Message{
-			Header:           solana.NewMessageHeader(2, 0, 1),
-			AccountAddresses: solana.CompactArray{3, []any{payer.PublicKey, newAccount.PublicKey, account.SystemProgram}},
-			RecentBlockhash:  sdk.RecentBlockhashFromString("7xq4MaWpVTyTsRG13GGFMHYLKx2sPQkzoRFwv7SRBSTb"),
-			Instructions: sdk.NewCompactArray(1, &sdk.Instruction{
-				ProgramIDIndex:        sdk.SerializableUInt8(2),
-				AccountAddressIndexes: sdk.NewCompactArray(2, sdk.SerializableUInt8(0), sdk.SerializableUInt8(1)),
-				Data: sdk.NewCompactArray(52, &sdk.InstructionData{
-					Data: struct {
-						Instruction sdk.SystemInstruction     // 4 +
-						Lamports    uint64                    // 8 +
-						Space       uint64                    // 8 +
-						Owner       sdk.SerializablePublicKey // 32 == 52
-					}{
-						Instruction: sdk.CreateAccount,
-						Lamports:    1_000_000_000 / 10,
-						Space:       32,
-						Owner:       sdk.SerializablePublicKey(sdk.PublicKey("7JM3jwj2hp9ULM6mqCrtX6PKeeG6C5STPPsFwXBF36CF")),
-					},
-				}),
-			}),
-		},
-	}
+	client := rpc.NewClient("https://api.devnet.solana.com", nil)
 
-	buffer := new(bytes.Buffer)
-
-	transaction.Serialize(buffer)
-	signedTransaction := transaction.Sign(buffer)
-
-	fmt.Println(signedTransaction)
+	solago.
+		NewTransaction(*client,
+			system.CreateAccountInstruction{
+				Payer:      *payer,
+				NewAccount: *newAccount,
+				Lamports:   1_000_000_000 / 10,
+				Space:      32,
+				Owner:      payer.PublicKey,
+			},
+		).
+		Sign(payer.PrivateKey, newAccount.PrivateKey).
+		Send()
 
 	// [2 38 106 131 110 6 93 82 233 39 90 222 244 13 243 104 210 71 204 62 30 65 64
 	//  160 233 81 146 84 42 6 140 242 54 7 208 41 165 69 226 236 4 5 78 97 90 180 157
@@ -66,43 +43,4 @@ func TestCreateAccount(t *testing.T) {
 	//  130 1 151 253 144 209 47 109 4 158 254 100 29 63 64 152 229 107 225 250 9 156 178 117 209
 	//  112 183 1 2 2 0 1 52 0 0 0 0 0 225 245 5 0 0 0 0 32
 	//  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-}
-
-func TestGetBlockhash(t *testing.T) {
-
-	client := rpc.NewClient("https://api.devnet.solana.com", nil)
-
-	responseBytes, err := client.Call(
-		&rpc.JSONRPCRequest{
-			Version: rpc.JSON_RPC_VERSION,
-			ID:      uuid.NewString(),
-			Method:  "getLatestBlockhash",
-			Params: []map[string]string{
-				{"commitment": "processed"},
-			},
-		},
-	)
-
-	if err != nil {
-		t.Fatal("Unable to hit rpc endpoint: ", err)
-	}
-
-	blockhashResponse := &struct {
-		rpc.JSONRPCResponse
-		Result struct {
-			Context struct {
-				Slot int `json:"slot"`
-			} `json:"context"`
-			Value struct {
-				Blockhash            string `json:"blockhash"`
-				LastValidBlockHeight int    `json:"lastValidBlockHeight"`
-			} `json:"value"`
-		} `json:"result"`
-	}{}
-
-	err = json.Unmarshal(responseBytes, &blockhashResponse)
-
-	if err != nil {
-		t.Fatal("Unable to marshal JSON: ", err)
-	}
 }

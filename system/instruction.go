@@ -1,6 +1,6 @@
 package system
 
-import "github.com/DeTix-xyz/solago"
+import "github.com/deezdegens/solago"
 
 type SystemInstruction uint32
 

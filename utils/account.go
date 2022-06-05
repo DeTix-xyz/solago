@@ -3,7 +3,7 @@ package utils
 import (
 	"reflect"
 
-	"github.com/DeTix-xyz/solago"
+	"github.com/deezdegens/solago"
 )
 
 func IndexOf[T solago.Account](elements []T, targets ...T) solago.AccountIndexes {

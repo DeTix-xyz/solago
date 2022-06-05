@@ -1,18 +1,22 @@
 package test
 
 import (
+	"fmt"
 	"testing"
+
+	"github.com/deezdegens/solago"
+	"github.com/deezdegens/solago/metadata"
 )
 
 func TestDeriveProgram(t *testing.T) {
-	// key, _ := sdk.FindProgramAddress(
-	// 	[][]byte{ // seeds
-	// 		[]byte("metadata"),
-	// 		sdk.MetaplexTokenMetaProgram,
-	// 		sdk.PublicKey("DwnN7Yk3i4sw4wt9VhScyYmL4EhxAYo5rqu6c4qSKxMk"),
-	// 	},
-	// 	sdk.MetaplexTokenMetaProgram, // program
-	// )
+	key, _ := solago.FindProgramAddress(
+		[][]byte{ // seeds
+			[]byte("metadata"),
+			metadata.MetaplexTokenMetaProgram,
+			solago.PublicKey("DwnN7Yk3i4sw4wt9VhScyYmL4EhxAYo5rqu6c4qSKxMk"),
+		},
+		metadata.MetaplexTokenMetaProgram, // program
+	)
 
-	// fmt.Println(key)
+	fmt.Println(key)
 }
