@@ -1,41 +1,67 @@
 package solago
 
+import (
+	"bytes"
+	"encoding/binary"
+)
+
+type ProgramIDIndex uint8
+
+func (index ProgramIDIndex) Serialize(buffer *bytes.Buffer) {
+	binary.Write(buffer, binary.LittleEndian, index)
+}
+
 type Instruction struct {
-	ProgramIDIndex        uint8
-	AccountAddressIndexes CompactArray[uint8]
-	Data                  CompactArray[byte]
+	ProgramIDIndex        ProgramIDIndex
+	AccountAddressIndexes CompactArray
+	Data                  CompactArray
 }
 
-type InProcessInstruction interface {
-	ProgramIDIndex([]Account) uint8
-	AccountAddressIndexes([]Account) CompactArray[uint8]
-	CollectAccounts() []Account
-	Data() CompactArray[byte]
+func (instruction Instruction) Serialize(buffer *bytes.Buffer) {
+	instruction.ProgramIDIndex.Serialize(buffer)
+	instruction.AccountAddressIndexes.Serialize(buffer)
+	instruction.Data.Serialize(buffer)
 }
 
-type InProcessInstructionCollection []InProcessInstruction
+type InstructionList []Instruction
 
-func (collection InProcessInstructionCollection) CollectAccounts() AccountCollection {
-	accounts := []Account{}
-
-	for _, instruction := range collection {
-		accounts = append(accounts, instruction.CollectAccounts()...)
+func (instructions InstructionList) Serialize(buffer *bytes.Buffer) {
+	for _, instruction := range instructions {
+		instruction.Serialize(buffer)
 	}
-
-	return accounts
 }
 
-func (collection InProcessInstructionCollection) MapToRaw() []Instruction {
-	instructions := []Instruction{}
-	sortedAccounts := collection.CollectAccounts().Sort()
+type PseudoInstruction interface {
+	ProgramIDIndex([]Account) ProgramIDIndex
+	AccountAddressIndexes([]Account) CompactArray
+	CollectAccounts() []Account
+	Data() CompactArray
+}
 
-	for _, instruction := range collection {
-		instructions = append(instructions, Instruction{
-			ProgramIDIndex:        instruction.ProgramIDIndex(sortedAccounts),
-			AccountAddressIndexes: instruction.AccountAddressIndexes(sortedAccounts),
-			Data:                  instruction.Data(),
-		})
+type PseudoInstructionList []PseudoInstruction
+
+func (pseudoInstructions PseudoInstructionList) NewInstructionList(accounts AccountList) InstructionList {
+	instructions := InstructionList{}
+
+	for _, pseudoInstruction := range pseudoInstructions {
+		instruction := Instruction{
+			ProgramIDIndex:        pseudoInstruction.ProgramIDIndex(accounts),
+			AccountAddressIndexes: pseudoInstruction.AccountAddressIndexes(accounts),
+			Data:                  pseudoInstruction.Data(),
+		}
+
+		instructions = append(instructions, instruction)
 	}
 
 	return instructions
+}
+
+func (pseudoInstructions PseudoInstructionList) CollectAccounts() AccountList {
+	accounts := AccountList{}
+
+	for _, pseudoInstruction := range pseudoInstructions {
+		accounts = append(accounts, pseudoInstruction.CollectAccounts()...)
+	}
+
+	return accounts.Sort()
 }

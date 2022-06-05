@@ -5,6 +5,7 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -16,6 +17,14 @@ import (
 
 type PublicKey ed25519.PublicKey
 type PrivateKey ed25519.PrivateKey
+
+func (key *PrivateKey) Serialize(buffer *bytes.Buffer) {
+	binary.Write(buffer, binary.LittleEndian, key)
+}
+
+func (key *PublicKey) Serialize(buffer *bytes.Buffer) {
+	binary.Write(buffer, binary.LittleEndian, key)
+}
 
 type Keypair struct {
 	PublicKey  PublicKey

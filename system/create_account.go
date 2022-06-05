@@ -53,10 +53,5 @@ func (instruction *CreateAccountInstruction) Data() solago.CompactArray[byte] {
 	binary.Write(buffer, binary.LittleEndian, instruction.Space)
 	binary.Write(buffer, binary.LittleEndian, instruction.Owner)
 
-	bytes := buffer.Bytes()
-
-	return solago.CompactArray[byte]{
-		Length: uint16(len(bytes)),
-		Items:  bytes,
-	}
+	return solago.NewCompactArray(buffer.Bytes()...)
 }

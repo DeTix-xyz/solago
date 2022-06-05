@@ -9,6 +9,8 @@ type Account struct {
 	Keypair Keypair
 }
 
+type AccountList []Account
+
 func NewSignerAccount(keypair Keypair) Account {
 	return Account{
 		Read:    true,
@@ -27,31 +29,29 @@ func NewReadOnlyAccount(keypair Keypair) Account {
 	}
 }
 
-type AccountCollection []Account
+func (accounts *AccountCollection) MapToKeys(private bool) []Serializable {
+	keys := []Serializable{}
 
-func (accounts AccountCollection) MapToPublicKeys() []PublicKey {
-	keys := []PublicKey{}
-
-	for _, account := range accounts {
-		keys = append(keys, account.Keypair.PublicKey)
+	for _, account := range *accounts {
+		if private {
+			keys = append(keys, account.Keypair.PrivateKey)
+		} else {
+			keys = append(keys, account.Keypair.PublicKey)
+		}
 	}
 
 	return keys
 }
 
-func (accounts AccountCollection) Sort() AccountCollection {
+func (accounts AccountList) Sort() AccountList {
 	sort.SliceStable(accounts, func(a, b int) bool {
-		aIsSigner := accounts[a].Signer
-		bIsSigner := accounts[b].Signer
-		bIsReadOnly := accounts[b].Read && !accounts[b].Write
-		aIsReadWrite := accounts[a].Read && accounts[a].Write
-		bothSigners := aIsSigner && bIsSigner
-		neitherSigners := !aIsSigner && !bIsSigner
+		bothSigners := accounts[a].Signer && accounts[b].Signer
+		neitherSigners := !accounts[a].Signer && !accounts[b].Signer
 
 		if bothSigners || neitherSigners {
-			return aIsReadWrite || bIsReadOnly
+			return accounts[a].Write || !accounts[b].Write
 		} else {
-			return aIsSigner
+			return accounts[a].Signer
 		}
 	})
 

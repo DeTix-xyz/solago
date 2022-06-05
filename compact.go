@@ -1,13 +1,25 @@
 package solago
 
-type CompactArray[T byte | PublicKey | PrivateKey | Instruction] struct {
+import (
+	"bytes"
+)
+
+type CompactArray struct {
 	Length uint16
-	Items  []T
+	Items  []Serializable
 }
 
-func NewCompactArray[T byte | PublicKey | PrivateKey | Instruction](items ...T) CompactArray[T] {
-	return CompactArray[T]{
+func NewCompactArray(items ...Serializable) CompactArray {
+	return CompactArray{
 		Length: uint16(len(items)),
 		Items:  items,
+	}
+}
+
+func (array *CompactArray) Serialize(buffer *bytes.Buffer) {
+	WriteUvarint(buffer, array.Length)
+
+	for _, item := range array.Items {
+		item.Serialize(buffer)
 	}
 }

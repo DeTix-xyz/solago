@@ -4,6 +4,10 @@ import (
 	"bytes"
 )
 
+type Serializable interface {
+	Serialize(*bytes.Buffer)
+}
+
 /**
  * https://github.com/golang/go/issues/29010
  */

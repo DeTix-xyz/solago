@@ -1,9 +1,12 @@
 package solago
 
-import "bytes"
+import (
+	"bytes"
+	"encoding/binary"
+)
 
 type Transaction struct {
-	Signatures CompactArray[PrivateKey]
+	Signatures CompactArray
 	Message    Message
 }
 
@@ -21,11 +24,13 @@ func NewTransaction(client Client, instructions ...InProcessInstruction) InProce
 	}
 }
 
-func (transaction InProcessTransaction) Sign(accounts ...Account) InProcessTransaction {
+func (transaction InProcessTransaction) Sign(accounts AccountCollection) InProcessTransaction {
+	// Write private keys
+	for _, privateKey := range accounts.MapToPrivateKeys() {
+		binary.Write(transaction.Buffer, binary.LittleEndian, privateKey)
+	}
 
-	//
-	// NEEDS to compute message header
-	//
+	// Serialize message
 
 	// allBytes := buffer.Bytes()
 	// signatureCutoff := transaction.Signatures.Length*ed25519.PrivateKeySize + 1
@@ -42,6 +47,5 @@ func (transaction InProcessTransaction) Sign(accounts ...Account) InProcessTrans
 	// }
 
 	// return base64.StdEncoding.EncodeToString(allBytes)
-
-	return nil
+	return transaction
 }
