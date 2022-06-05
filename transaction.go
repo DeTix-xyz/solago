@@ -2,50 +2,52 @@ package solago
 
 import (
 	"bytes"
-	"encoding/binary"
+	"crypto/ed25519"
+	"encoding/base64"
+
+	"github.com/deezdegens/solago/rpc"
 )
 
 type Transaction struct {
-	Signatures CompactArray
-	Message    Message
-}
-
-type InProcessTransaction struct {
 	Buffer  *bytes.Buffer
 	Message Message
-	Client  Client
+	Client  rpc.Client
 }
 
-func NewTransaction(client Client, instructions ...InProcessInstruction) InProcessTransaction {
-	return InProcessTransaction{
+func NewTransaction(client rpc.Client, instructions ...PseudoInstruction) Transaction {
+	return Transaction{
 		Buffer:  new(bytes.Buffer),
-		Message: NewMessage(client.GetRecentBlockhash(), instructions),
+		Message: NewMessage(RecentBlockhashFromString(client.GetRecentBlockhash()), instructions),
 		Client:  client,
 	}
 }
 
-func (transaction InProcessTransaction) Sign(accounts AccountCollection) InProcessTransaction {
-	// Write private keys
-	for _, privateKey := range accounts.MapToPrivateKeys() {
-		binary.Write(transaction.Buffer, binary.LittleEndian, privateKey)
-	}
+func (transaction Transaction) SignAndSend(accounts AccountList) string {
+	// Write private keys for subsequent signature
+	privateKeys := accounts.ToPrivateKeys()
+	privateKeys.Serialize(transaction.Buffer)
 
 	// Serialize message
+	transaction.Message.Serialize(transaction.Buffer)
 
-	// allBytes := buffer.Bytes()
-	// signatureCutoff := transaction.Signatures.Length*ed25519.PrivateKeySize + 1
+	// Sign the message
+	allBytes := transaction.Buffer.Bytes()
+	signatureCutoff := len(accounts)*ed25519.PrivateKeySize + 1
 
-	// signatures := allBytes[:signatureCutoff]
-	// message := allBytes[signatureCutoff:]
+	signatures := allBytes[:signatureCutoff]
+	message := allBytes[signatureCutoff:]
 
-	// for i, privateKey := range transaction.Signatures.Items {
-	// 	start := i*ed25519.PrivateKeySize + 1
-	// 	end := (i+1)*ed25519.PrivateKeySize + 1
-	// 	signature := ed25519.Sign(privateKey.(ed25519.PrivateKey), message)
+	for i, privateKey := range privateKeys {
+		start := i*ed25519.PrivateKeySize + 1
+		end := (i+1)*ed25519.PrivateKeySize + 1
+		signature := ed25519.Sign(ed25519.PrivateKey(privateKey), message)
 
-	// 	copy(signatures[start:end], signature)
-	// }
+		copy(signatures[start:end], signature)
+	}
 
-	// return base64.StdEncoding.EncodeToString(allBytes)
-	return transaction
+	// Get the txn string
+	transactionString := base64.StdEncoding.EncodeToString(allBytes)
+
+	// Send the string to the cluster
+	return transaction.Client.SendTransaction(transactionString)
 }

@@ -1,4 +1,4 @@
-module github.com/DeTix-xyz/solago
+module github.com/deezdegens/solago
 
 go 1.18
 
