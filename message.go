@@ -13,13 +13,13 @@ type MessageHeader struct {
 	NumberReadOnlyUnsignedAccounts uint8
 }
 
-func (header *MessageHeader) Serialize(buffer *bytes.Buffer) {
+func (header MessageHeader) Serialize(buffer *bytes.Buffer) {
 	binary.Write(buffer, binary.LittleEndian, header.NumberRequiredSignatures)
 	binary.Write(buffer, binary.LittleEndian, header.NumberReadOnlySignedAccounts)
 	binary.Write(buffer, binary.LittleEndian, header.NumberReadOnlyUnsignedAccounts)
 }
 
-func NewMessageHeaderFromAccounts(accounts []Account) MessageHeader {
+func NewMessageHeaderFromAccounts(accounts AccountList) MessageHeader {
 	numRequiredSignatures := uint8(0)
 	numReadOnlySigned := uint8(0)
 	numReadOnlyUnsigned := uint8(0)
@@ -62,7 +62,7 @@ func NewMessage(blockhash RecentBlockhash, pseudoInstructions PseudoInstructionL
 	}
 }
 
-func (message *Message) Serialize(buffer *bytes.Buffer) {
+func (message Message) Serialize(buffer *bytes.Buffer) {
 	message.Header.Serialize(buffer)
 	message.AccountAddresses.Serialize(buffer)
 	message.RecentBlockhash.Serialize(buffer)
@@ -77,6 +77,6 @@ func RecentBlockhashFromString(hash string) RecentBlockhash {
 	return bytes
 }
 
-func (hash *RecentBlockhash) Serialize(buffer *bytes.Buffer) {
+func (hash RecentBlockhash) Serialize(buffer *bytes.Buffer) {
 	binary.Write(buffer, binary.LittleEndian, hash)
 }
