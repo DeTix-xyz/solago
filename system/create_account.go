@@ -8,9 +8,7 @@ import (
 	"github.com/deezdegens/solago/utils"
 )
 
-var SystemAccount = solago.NewReadOnlyAccount(
-	solago.Keypair{PublicKey: SystemProgramAccount},
-)
+var SystemAccount = solago.NewReadOnlyAccount(&solago.Keypair{PublicKey: SystemProgramAccount})
 
 type CreateAccountInstruction struct {
 	Payer      solago.Keypair
@@ -21,7 +19,7 @@ type CreateAccountInstruction struct {
 }
 
 func (instruction *CreateAccountInstruction) ProgramIDIndex(accounts solago.AccountList) uint8 {
-	return utils.IndexOf(accounts, SystemAccount)[0]
+	return utils.IndexOf(accounts, *SystemAccount)[0]
 }
 
 func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts solago.AccountList) solago.CompactArray {

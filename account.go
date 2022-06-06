@@ -10,7 +10,7 @@ type Account struct {
 	Read    bool
 	Write   bool
 	Signer  bool
-	Keypair *Keypair
+	Keypair Keypair
 }
 
 type AccountList []Account
@@ -26,8 +26,8 @@ func (indexes AccountIndexes) Serialize(buffer *bytes.Buffer) {
 const SizeOfMintAccount = 82
 const SizeOfMultisigAccount = 355
 
-func NewSignerAccount(keypair *Keypair) *Account {
-	return &Account{
+func NewSignerAccount(keypair Keypair) Account {
+	return Account{
 		Read:    true,
 		Write:   true,
 		Signer:  true,
@@ -35,8 +35,8 @@ func NewSignerAccount(keypair *Keypair) *Account {
 	}
 }
 
-func NewReadOnlyAccount(keypair *Keypair) *Account {
-	return &Account{
+func NewReadOnlyAccount(keypair Keypair) Account {
+	return Account{
 		Read:    true,
 		Write:   false,
 		Signer:  false,
@@ -44,8 +44,8 @@ func NewReadOnlyAccount(keypair *Keypair) *Account {
 	}
 }
 
-func NewReadWriteAccount(keypair *Keypair) *Account {
-	return &Account{
+func NewReadWriteAccount(keypair Keypair) Account {
+	return Account{
 		Read:    true,
 		Write:   true,
 		Signer:  false,
@@ -53,29 +53,27 @@ func NewReadWriteAccount(keypair *Keypair) *Account {
 	}
 }
 
-func (accounts *AccountList) ToPublicKeys() *PublicKeys {
+func (accounts AccountList) ToPublicKeys() PublicKeys {
 	publicKeys := PublicKeys{}
 
-	for _, account := range *accounts {
+	for _, account := range accounts {
 		publicKeys = append(publicKeys, account.Keypair.PublicKey)
 	}
 
-	return &publicKeys
+	return publicKeys
 }
 
-func (accounts *AccountList) ToPrivateKeys() *PrivateKeys {
-	publicKeys := PrivateKeys{}
+func (accounts AccountList) ToPrivateKeys() PrivateKeys {
+	privateKeys := PrivateKeys{}
 
-	for _, account := range *accounts {
-		publicKeys = append(publicKeys, account.Keypair.PrivateKey)
+	for _, account := range accounts {
+		privateKeys = append(privateKeys, account.Keypair.PrivateKey)
 	}
 
-	return &publicKeys
+	return privateKeys
 }
 
-func (accountsRef *AccountList) Sort() *AccountList {
-	accounts := *accountsRef
-
+func (accounts AccountList) Sort() AccountList {
 	sort.SliceStable(accounts, func(a, b int) bool {
 		bothSigners := accounts[a].Signer && accounts[b].Signer
 		neitherSigners := !accounts[a].Signer && !accounts[b].Signer
@@ -87,5 +85,5 @@ func (accountsRef *AccountList) Sort() *AccountList {
 		}
 	})
 
-	return accountsRef
+	return accounts
 }
