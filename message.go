@@ -51,14 +51,12 @@ type Message struct {
 	Instructions     CompactArray
 }
 
-func NewMessage(blockhash RecentBlockhash, pseudoInstructions PseudoInstructionList) Message {
-	accounts := pseudoInstructions.CollectAccounts()
-
+func NewMessage(blockhash RecentBlockhash, accounts AccountList, instructions InstructionList) Message {
 	return Message{
 		RecentBlockhash:  blockhash,
 		Header:           NewMessageHeaderFromAccounts(accounts),
 		AccountAddresses: NewCompactArray(accounts.ToPublicKeys()),
-		Instructions:     NewCompactArray(pseudoInstructions.NewInstructionList(accounts)),
+		Instructions:     NewCompactArray(instructions),
 	}
 }
 

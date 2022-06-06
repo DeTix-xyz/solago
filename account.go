@@ -86,3 +86,15 @@ func (accounts AccountList) Sort() AccountList {
 
 	return accounts
 }
+
+func (accounts AccountList) GetSigners() AccountList {
+	signers := AccountList{}
+
+	for _, account := range accounts {
+		if account.Signer {
+			signers = append(signers, account)
+		}
+	}
+
+	return signers
+}

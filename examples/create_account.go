@@ -1,36 +1,29 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/deezdegens/solago"
-	"github.com/deezdegens/solago/rpc"
 	"github.com/deezdegens/solago/system"
 )
 
 func main() {
 	// Sugar daddy
-	payer := solago.NewKeypairFromFile("/Users/trumanpurnell/.config/solana/id.json")
+	payerAccount := solago.SignerAccountFromFile("/Users/trumanpurnell/.config/solana/id.json")
 
 	// New account to be created
-	newAccount := solago.NewKeypairFromSeed([32]byte{})
+	newAccount := solago.NewSignerAccountFromSeed([32]byte{})
 
 	// Transaction to create account
-	client := rpc.NewClient("https://api.devnet.solana.com", nil)
+	client := solago.NewClient("https://api.devnet.solana.com")
 
-	confirmation := solago.
-		NewTransaction(client,
-			system.CreateAccountInstruction{
-				Payer:      payer,
-				NewAccount: newAccount,
-				Lamports:   1_000_000_000 / 10,
-				Space:      32,
-				Owner:      payer.PublicKey,
-			},
-		).
-		SignAndSend(payer.PrivateKey, newAccount.PrivateKey)
-
-	fmt.Println(confirmation)
+	confirmation := client.SendTransaction(
+		system.CreateAccountInstruction{
+			Payer:      payerAccount,
+			NewAccount: newAccount,
+			Lamports:   1_000_000_000 / 10,
+			Space:      32,
+			Owner:      payerAccount.Keypair.PublicKey,
+		},
+	)
 
 	// [2 38 106 131 110 6 93 82 233 39 90 222 244 13 243 104 210 71 204 62 30 65 64
 	//  160 233 81 146 84 42 6 140 242 54 7 208 41 165 69 226 236 4 5 78 97 90 180 157
