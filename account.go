@@ -14,7 +14,6 @@ type Account struct {
 }
 
 type AccountList []Account
-
 type AccountIndexes []uint8
 
 func (indexes AccountIndexes) Serialize(buffer *bytes.Buffer) {

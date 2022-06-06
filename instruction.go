@@ -7,11 +7,11 @@ import (
 
 type Instruction struct {
 	ProgramIDIndex        uint8
-	AccountAddressIndexes *CompactArray
-	Data                  *CompactArray
+	AccountAddressIndexes CompactArray
+	Data                  CompactArray
 }
 
-func (instruction *Instruction) Serialize(buffer *bytes.Buffer) {
+func (instruction Instruction) Serialize(buffer *bytes.Buffer) {
 	binary.Write(buffer, binary.LittleEndian, instruction.ProgramIDIndex)
 	instruction.AccountAddressIndexes.Serialize(buffer)
 	instruction.Data.Serialize(buffer)
@@ -19,22 +19,22 @@ func (instruction *Instruction) Serialize(buffer *bytes.Buffer) {
 
 type InstructionList []Instruction
 
-func (instructions *InstructionList) Serialize(buffer *bytes.Buffer) {
-	for _, instruction := range *instructions {
+func (instructions InstructionList) Serialize(buffer *bytes.Buffer) {
+	for _, instruction := range instructions {
 		instruction.Serialize(buffer)
 	}
 }
 
 type PseudoInstruction interface {
-	ProgramIDIndex(*AccountList) uint8
-	AccountAddressIndexes(*AccountList) *CompactArray
-	CollectAccounts() *AccountList
-	Data() *CompactArray
+	ProgramIDIndex(AccountList) uint8
+	AccountAddressIndexes(AccountList) CompactArray
+	CollectAccounts() AccountList
+	Data() CompactArray
 }
 
 type PseudoInstructionList []PseudoInstruction
 
-func (pseudoInstructions PseudoInstructionList) NewInstructionList(accounts *AccountList) *InstructionList {
+func (pseudoInstructions PseudoInstructionList) NewInstructionList(accounts AccountList) InstructionList {
 	instructions := InstructionList{}
 
 	for _, pseudoInstruction := range pseudoInstructions {
@@ -47,14 +47,14 @@ func (pseudoInstructions PseudoInstructionList) NewInstructionList(accounts *Acc
 		instructions = append(instructions, instruction)
 	}
 
-	return &instructions
+	return instructions
 }
 
-func (pseudoInstructions *PseudoInstructionList) CollectAccounts() *AccountList {
+func (pseudoInstructions PseudoInstructionList) CollectAccounts() AccountList {
 	accounts := AccountList{}
 
-	for _, pseudoInstruction := range *pseudoInstructions {
-		for _, account := range *pseudoInstruction.CollectAccounts() {
+	for _, pseudoInstruction := range pseudoInstructions {
+		for _, account := range pseudoInstruction.CollectAccounts() {
 			accounts = append(accounts, account)
 		}
 	}
