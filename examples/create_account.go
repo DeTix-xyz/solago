@@ -1,15 +1,14 @@
-package test
+package main
 
 import (
 	"fmt"
-	"testing"
 
 	"github.com/deezdegens/solago"
 	"github.com/deezdegens/solago/rpc"
 	"github.com/deezdegens/solago/system"
 )
 
-func TestCreateAccount(t *testing.T) {
+func main() {
 	// Sugar daddy
 	payer := solago.NewKeypairFromFile("/Users/trumanpurnell/.config/solana/id.json")
 

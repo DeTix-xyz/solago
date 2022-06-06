@@ -54,9 +54,7 @@ func (pseudoInstructions PseudoInstructionList) CollectAccounts() AccountList {
 	accounts := AccountList{}
 
 	for _, pseudoInstruction := range pseudoInstructions {
-		for _, account := range pseudoInstruction.CollectAccounts() {
-			accounts = append(accounts, account)
-		}
+		accounts = append(accounts, pseudoInstruction.CollectAccounts()...)
 	}
 
 	return accounts.Sort()

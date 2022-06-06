@@ -11,13 +11,13 @@ import (
 type Transaction struct {
 	Buffer  *bytes.Buffer
 	Message Message
-	Client  rpc.Client
+	Client  *rpc.Client
 }
 
-func NewTransaction(client rpc.Client, instructions ...PseudoInstruction) Transaction {
+func NewTransaction(client *rpc.Client, instructions ...PseudoInstruction) Transaction {
 	return Transaction{
 		Buffer:  new(bytes.Buffer),
-		Message: NewMessage(RecentBlockhashFromString(client.GetRecentBlockhash()), instructions),
+		Message: NewMessage(RecentBlockhashFromString("AM9JCV5XMnB1t2Zv8YfRxCCpVv6k898Qf8S2K4dCctbp"), instructions),
 		Client:  client,
 	}
 }
