@@ -11,8 +11,8 @@ import (
 var SystemAccount = solago.NewReadOnlyAccount(solago.Keypair{PublicKey: SystemProgramAccount})
 
 type CreateAccountInstruction struct {
-	Payer      solago.Keypair
-	NewAccount solago.Keypair
+	Payer      solago.Account
+	NewAccount solago.Account
 	Lamports   uint64
 	Space      uint64
 	Owner      solago.PublicKey
@@ -25,8 +25,8 @@ func (instruction CreateAccountInstruction) ProgramIDIndex(accounts solago.Accou
 func (instruction CreateAccountInstruction) AccountAddressIndexes(accounts solago.AccountList) solago.CompactArray {
 	indexes := utils.IndexOf(
 		accounts,
-		solago.NewSignerAccount(instruction.Payer),
-		solago.NewSignerAccount(instruction.NewAccount),
+		instruction.Payer,
+		instruction.NewAccount,
 	)
 
 	return solago.NewCompactArray(indexes)
@@ -34,8 +34,8 @@ func (instruction CreateAccountInstruction) AccountAddressIndexes(accounts solag
 
 func (instruction CreateAccountInstruction) CollectAccounts() solago.AccountList {
 	return solago.AccountList{
-		solago.NewSignerAccount(instruction.Payer),
-		solago.NewSignerAccount(instruction.NewAccount),
+		instruction.Payer,
+		instruction.NewAccount,
 		SystemAccount,
 	}
 }

@@ -52,6 +52,18 @@ func NewReadWriteAccount(keypair Keypair) Account {
 	}
 }
 
+func NewSignerAccountFromSeed(seed [32]byte) Account {
+	keypair := NewKeypairFromSeed(seed)
+
+	return NewSignerAccount(keypair)
+}
+
+func SignerAccountFromFile(path string) Account {
+	keypair := KeypairFromFile(path)
+
+	return NewSignerAccount(keypair)
+}
+
 func (accounts AccountList) ToPublicKeys() PublicKeys {
 	publicKeys := PublicKeys{}
 

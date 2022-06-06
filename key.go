@@ -82,7 +82,7 @@ func NewKeypairFromSeed(seed [32]byte) Keypair {
 	}
 }
 
-func NewKeypairFromFile(path string) Keypair {
+func KeypairFromFile(path string) Keypair {
 	bytes, _ := ioutil.ReadFile(path)
 
 	var keypair Keypair
