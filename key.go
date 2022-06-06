@@ -17,28 +17,28 @@ import (
 
 type PublicKey ed25519.PublicKey
 
-func (key *PublicKey) Serialize(buffer *bytes.Buffer) {
+func (key PublicKey) Serialize(buffer *bytes.Buffer) {
 	binary.Write(buffer, binary.LittleEndian, key)
 }
 
 type PrivateKey ed25519.PrivateKey
 
-func (key *PrivateKey) Serialize(buffer *bytes.Buffer) {
+func (key PrivateKey) Serialize(buffer *bytes.Buffer) {
 	binary.Write(buffer, binary.LittleEndian, key)
 }
 
 type PublicKeys []PublicKey
 
-func (keys *PublicKeys) Serialize(buffer *bytes.Buffer) {
-	for _, key := range *keys {
+func (keys PublicKeys) Serialize(buffer *bytes.Buffer) {
+	for _, key := range keys {
 		key.Serialize(buffer)
 	}
 }
 
 type PrivateKeys []PrivateKey
 
-func (keys *PrivateKeys) Serialize(buffer *bytes.Buffer) {
-	for _, key := range *keys {
+func (keys PrivateKeys) Serialize(buffer *bytes.Buffer) {
+	for _, key := range keys {
 		key.Serialize(buffer)
 	}
 }
@@ -67,22 +67,22 @@ func NewPrivateKey(key string) PrivateKey {
 	return privateKey
 }
 
-func NewKeypair() *Keypair {
+func NewKeypair() Keypair {
 	public, private, _ := ed25519.GenerateKey(rand.Reader)
 
-	return &Keypair{PublicKey: PublicKey(public), PrivateKey: PrivateKey(private)}
+	return Keypair{PublicKey: PublicKey(public), PrivateKey: PrivateKey(private)}
 }
 
-func NewKeypairFromSeed(seed [32]byte) *Keypair {
+func NewKeypairFromSeed(seed [32]byte) Keypair {
 	private := ed25519.NewKeyFromSeed(seed[:])
 
-	return &Keypair{
+	return Keypair{
 		PrivateKey: PrivateKey(private),
 		PublicKey:  PublicKeyFromPrivateKey(PrivateKey(private)),
 	}
 }
 
-func NewKeypairFromFile(path string) *Keypair {
+func NewKeypairFromFile(path string) Keypair {
 	bytes, _ := ioutil.ReadFile(path)
 
 	var keypair Keypair
@@ -90,7 +90,7 @@ func NewKeypairFromFile(path string) *Keypair {
 
 	keypair.PublicKey = PublicKeyFromPrivateKey(keypair.PrivateKey)
 
-	return &keypair
+	return keypair
 }
 
 func CreateProgramAddress(seeds [][]byte, program PublicKey) (PublicKey, error) {
