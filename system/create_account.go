@@ -8,7 +8,7 @@ import (
 	"github.com/deezdegens/solago/utils"
 )
 
-var SystemAccount = solago.NewReadOnlyAccount(&solago.Keypair{PublicKey: SystemProgramAccount})
+var SystemAccount = solago.NewReadOnlyAccount(solago.Keypair{PublicKey: SystemProgramAccount})
 
 type CreateAccountInstruction struct {
 	Payer      solago.Keypair
@@ -18,11 +18,11 @@ type CreateAccountInstruction struct {
 	Owner      solago.PublicKey
 }
 
-func (instruction *CreateAccountInstruction) ProgramIDIndex(accounts solago.AccountList) uint8 {
-	return utils.IndexOf(accounts, *SystemAccount)[0]
+func (instruction CreateAccountInstruction) ProgramIDIndex(accounts solago.AccountList) uint8 {
+	return utils.IndexOf(accounts, SystemAccount)[0]
 }
 
-func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts solago.AccountList) solago.CompactArray {
+func (instruction CreateAccountInstruction) AccountAddressIndexes(accounts solago.AccountList) solago.CompactArray {
 	indexes := utils.IndexOf(
 		accounts,
 		solago.NewSignerAccount(instruction.Payer),
@@ -32,7 +32,7 @@ func (instruction *CreateAccountInstruction) AccountAddressIndexes(accounts sola
 	return solago.NewCompactArray(indexes)
 }
 
-func (instruction *CreateAccountInstruction) CollectAccounts() solago.AccountList {
+func (instruction CreateAccountInstruction) CollectAccounts() solago.AccountList {
 	return solago.AccountList{
 		solago.NewSignerAccount(instruction.Payer),
 		solago.NewSignerAccount(instruction.NewAccount),
@@ -40,7 +40,7 @@ func (instruction *CreateAccountInstruction) CollectAccounts() solago.AccountLis
 	}
 }
 
-func (instruction *CreateAccountInstruction) Data() solago.CompactArray {
+func (instruction CreateAccountInstruction) Data() solago.CompactArray {
 	buffer := new(bytes.Buffer)
 
 	binary.Write(buffer, binary.LittleEndian, CreateAccount)
