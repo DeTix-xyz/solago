@@ -86,13 +86,12 @@ func (accounts AccountList) ToPrivateKeys() PrivateKeys {
 
 func (accounts AccountList) Sort() AccountList {
 	sort.SliceStable(accounts, func(a, b int) bool {
-		bothSigners := accounts[a].Signer && accounts[b].Signer
-		neitherSigners := !accounts[a].Signer && !accounts[b].Signer
-
-		if bothSigners || neitherSigners {
-			return accounts[a].Write || !accounts[b].Write
-		} else {
+		if accounts[a].Signer != accounts[b].Signer { // only one is signer
 			return accounts[a].Signer
+		} else if accounts[a].Write != accounts[b].Write { // only one is writer
+			return accounts[a].Write
+		} else { // don't change the order
+			return false
 		}
 	})
 
