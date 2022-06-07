@@ -12,7 +12,9 @@ func main() {
 	payerAccount := solago.SignerAccountFromFile("/Users/trumanpurnell/.config/solana/id.json")
 
 	// New account to be created
-	newAccount := solago.NewSignerAccountFromSeed([32]byte{})
+	newAccount := solago.NewSignerAccount(solago.NewKeypair())
+
+	fmt.Println(newAccount.Keypair.PublicKey)
 
 	// Transaction to create account
 	client := solago.NewClient("https://api.devnet.solana.com")

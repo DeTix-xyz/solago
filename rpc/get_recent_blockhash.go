@@ -13,7 +13,7 @@ func (client *Client) GetRecentBlockhash() string {
 			ID:      uuid.NewString(),
 			Method:  "getLatestBlockhash",
 			Params: []map[string]string{
-				{"commitment": "processed"},
+				{"commitment": "finalized"},
 			},
 		},
 	)

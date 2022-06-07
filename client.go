@@ -25,32 +25,27 @@ func (client Client) SendTransaction(pseudoInstructions ...PseudoInstruction) st
 	// Get the accounts
 	accounts := PseudoInstructionList(pseudoInstructions).CollectAccounts()
 
-	// Create real instructions from pseudos
-	instructions := PseudoInstructionList(pseudoInstructions).NewInstructionList(accounts)
-
 	// Formulate the message
-	message := NewMessage(
-		RecentBlockhashFromString("AM9JCV5XMnB1t2Zv8YfRxCCpVv6k898Qf8S2K4dCctbp"),
-		accounts,
-		instructions,
-	)
+	transaction := Transaction{
+		Signatures: NewCompactArray(accounts.GetSigners().ToPrivateKeys()),
+		Message: NewMessage(
+			RecentBlockhashFromString(client.rpc.GetRecentBlockhash()),
+			accounts,
+			PseudoInstructionList(pseudoInstructions).NewInstructionList(accounts),
+		),
+	}
 
-	// Get signers and write their private keys for eventual signature
-	signers := accounts.GetSigners()
-	privateKeys := signers.ToPrivateKeys()
-	privateKeys.Serialize(buffer)
-
-	// Serialize message
-	message.Serialize(buffer)
+	// Serialize the transaction
+	transaction.Serialize(buffer)
 
 	// Sign the message
 	allBytes := buffer.Bytes()
-	signatureCutoff := len(signers)*ed25519.PrivateKeySize + 1
+	signatureCutoff := transaction.Signatures.Length*ed25519.PrivateKeySize + 1 // plus one byte for # of sigs
 
 	signatureBytes := allBytes[:signatureCutoff]
 	messageBytes := allBytes[signatureCutoff:]
 
-	for i, privateKey := range privateKeys {
+	for i, privateKey := range transaction.Signatures.Items.(PrivateKeys) {
 		start := i*ed25519.PrivateKeySize + 1
 		end := (i+1)*ed25519.PrivateKeySize + 1
 		signature := ed25519.Sign(ed25519.PrivateKey(privateKey), messageBytes)

@@ -17,11 +17,19 @@ import (
 
 type PublicKey ed25519.PublicKey
 
+func (key PublicKey) String() string {
+	return base58.Encode(key)
+}
+
 func (key PublicKey) Serialize(buffer *bytes.Buffer) {
 	binary.Write(buffer, binary.LittleEndian, key)
 }
 
 type PrivateKey ed25519.PrivateKey
+
+func (key PrivateKey) String() string {
+	return base58.Encode(key)
+}
 
 func (key PrivateKey) Serialize(buffer *bytes.Buffer) {
 	binary.Write(buffer, binary.LittleEndian, key)
