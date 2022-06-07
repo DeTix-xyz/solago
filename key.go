@@ -17,7 +17,7 @@ import (
 
 type PublicKey ed25519.PublicKey
 
-func (key PublicKey) String() string {
+func (key PublicKey) ToBase58() string {
 	return base58.Encode(key)
 }
 
@@ -27,7 +27,7 @@ func (key PublicKey) Serialize(buffer *bytes.Buffer) {
 
 type PrivateKey ed25519.PrivateKey
 
-func (key PrivateKey) String() string {
+func (key PrivateKey) ToBase58() string {
 	return base58.Encode(key)
 }
 

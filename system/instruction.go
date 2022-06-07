@@ -1,7 +1,5 @@
 package system
 
-import "github.com/deezdegens/solago"
-
 type SystemInstruction uint32
 
 const (
@@ -18,5 +16,3 @@ const (
 	AssignWithSeed
 	TransferWithSeed
 )
-
-var SystemProgramAccount = solago.NewPublicKey("11111111111111111111111111111111")

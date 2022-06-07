@@ -9,12 +9,12 @@ import (
 )
 
 type Client struct {
-	rpc *rpc.Client
+	RPC *rpc.Client
 }
 
 func NewClient(endpoint string) Client {
 	return Client{
-		rpc: rpc.NewClient("https://api.devnet.solana.com", nil),
+		RPC: rpc.NewClient("https://api.devnet.solana.com", nil),
 	}
 }
 
@@ -29,7 +29,7 @@ func (client Client) SendTransaction(pseudoInstructions ...PseudoInstruction) st
 	transaction := Transaction{
 		Signatures: NewCompactArray(accounts.GetSigners().ToPrivateKeys()),
 		Message: NewMessage(
-			RecentBlockhashFromString(client.rpc.GetRecentBlockhash()),
+			RecentBlockhashFromString(client.RPC.GetRecentBlockhash()),
 			accounts,
 			PseudoInstructionList(pseudoInstructions).NewInstructionList(accounts),
 		),
@@ -57,5 +57,5 @@ func (client Client) SendTransaction(pseudoInstructions ...PseudoInstruction) st
 	transactionString := base64.StdEncoding.EncodeToString(allBytes)
 
 	// Send the string to the cluster
-	return client.rpc.SendTransaction(transactionString)
+	return client.RPC.SendTransaction(transactionString)
 }

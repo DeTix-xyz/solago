@@ -52,9 +52,17 @@ func (pseudoInstructions PseudoInstructionList) NewInstructionList(accounts Acco
 
 func (pseudoInstructions PseudoInstructionList) CollectAccounts() AccountList {
 	accounts := AccountList{}
+	seen := map[string]bool{}
 
 	for _, pseudoInstruction := range pseudoInstructions {
-		accounts = append(accounts, pseudoInstruction.CollectAccounts()...)
+		for _, account := range pseudoInstruction.CollectAccounts() {
+			key := account.Keypair.PublicKey.ToBase58()
+
+			if !seen[key] {
+				accounts = append(accounts, account)
+				seen[key] = true
+			}
+		}
 	}
 
 	return accounts.Sort()
