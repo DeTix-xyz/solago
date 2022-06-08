@@ -126,17 +126,18 @@ func isOnCurve(b []byte) bool {
 	return isOnCurve
 }
 
-func FindProgramAddress(seedBytes, programBytes, accountBytes []byte, programID PublicKey) (PublicKey, error) {
+func FindProgramAddress(seedBytes, programBytes, accountBytes []byte, programID PublicKey) PublicKey {
 	seed := [][]byte{seedBytes, programBytes, accountBytes}
 	bumpSeed := uint8(math.MaxUint8)
 
 	for bumpSeed != 0 {
 		address, err := CreateProgramAddress(append(seed, []byte{byte(bumpSeed)}), programID)
 		if err == nil {
-			return address, nil
+			return address
 		}
 		bumpSeed--
 	}
 
-	return nil, errors.New("could not find valid key for given seeds")
+	// Bad I know, I just think Golang error handling is ugly. Let the hate rain down!
+	panic("Couldn't find metadata account for those seeds")
 }

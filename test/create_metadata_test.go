@@ -14,18 +14,12 @@ func TestCreateMetadata(t *testing.T) {
 	// Sugar daddy
 	payerAccount := solago.SignerAccountFromFile("/Users/trumanpurnell/.config/solana/id.json")
 
-	// New mint to be created
+	// New mint account
 	mintAccount := solago.NewSignerAccount(solago.NewKeypair())
-
-	// Metadata account must be derived from mint public key
-	metadataAccountPublicKey, _ := solago.FindProgramAddress(
-		[]byte("metadata"),
-		metadata.Program,
-		instruction.MintAccount.Keypair.PublicKey,
-		metadata.Program,
-	)
-
 	fmt.Println(mintAccount.Keypair.PublicKey.ToBase58())
+
+	// New metadata account (derived from mint public key)
+	metadataAccount := metadata.DeriveMetadataAccountFromMint(mintAccount)
 
 	// Transaction to create the mint
 	client := solago.NewClient("https://api.devnet.solana.com")
@@ -39,10 +33,28 @@ func TestCreateMetadata(t *testing.T) {
 			Owner:      token.Program,
 		},
 		token.InitializeMint2Instruction{
+			PayerAccount:  payerAccount,
 			MintAccount:   mintAccount,
 			Decimals:      0,
-			MintAuthority: payerAccount.Keypair.PublicKey,
+			MintAuthority: mintAccount.Keypair.PublicKey,
 			FreezeAccount: system.Program,
+		},
+		metadata.CreateMetadataAccountInstruction{
+			Payer:                payerAccount,
+			MintAccount:          mintAccount,
+			MintAuthorityAccount: mintAccount,
+			UpdateAuthority:      payerAccount,
+			MetadataAccount:      metadataAccount,
+			Metadata: metadata.Metadata{
+				Name:                 "Duh Duh Duh",
+				Symbol:               "DDD",
+				URI:                  "https://pastebin.com/raw/0HgNHgwA",
+				SellerFeeBasisPoints: 87_00,
+				Creators:             nil,
+				Collection:           nil,
+				Uses:                 nil,
+				IsMutable:            true,
+			},
 		},
 	)
 
