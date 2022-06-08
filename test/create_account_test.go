@@ -6,6 +6,7 @@ import (
 
 	"github.com/deezdegens/solago"
 	"github.com/deezdegens/solago/system"
+	"github.com/deezdegens/solago/token"
 )
 
 func TestCreateAccount(t *testing.T) {
@@ -24,9 +25,9 @@ func TestCreateAccount(t *testing.T) {
 		system.CreateAccountInstruction{
 			Payer:      payerAccount,
 			NewAccount: newAccount,
-			Lamports:   1_000_000_000 / 10,
-			Space:      32,
-			Owner:      system.Account.Keypair.PublicKey,
+			Lamports:   client.RPC.GetMinimumRent(token.SizeOfMint),
+			Space:      token.SizeOfMint,
+			Owner:      token.Program,
 		},
 	)
 

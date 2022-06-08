@@ -126,7 +126,8 @@ func isOnCurve(b []byte) bool {
 	return isOnCurve
 }
 
-func FindProgramAddress(seed [][]byte, programID PublicKey) (PublicKey, error) {
+func FindProgramAddress(seedBytes, programBytes, accountBytes []byte, programID PublicKey) (PublicKey, error) {
+	seed := [][]byte{seedBytes, programBytes, accountBytes}
 	bumpSeed := uint8(math.MaxUint8)
 
 	for bumpSeed != 0 {

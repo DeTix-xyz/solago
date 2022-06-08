@@ -5,16 +5,25 @@ import (
 	"testing"
 
 	"github.com/deezdegens/solago"
+	"github.com/deezdegens/solago/metadata"
 	"github.com/deezdegens/solago/system"
 	"github.com/deezdegens/solago/token"
 )
 
-func TestCreateMint(t *testing.T) {
+func TestCreateMetadata(t *testing.T) {
 	// Sugar daddy
 	payerAccount := solago.SignerAccountFromFile("/Users/trumanpurnell/.config/solana/id.json")
 
 	// New mint to be created
 	mintAccount := solago.NewSignerAccount(solago.NewKeypair())
+
+	// Metadata account must be derived from mint public key
+	metadataAccountPublicKey, _ := solago.FindProgramAddress(
+		[]byte("metadata"),
+		metadata.Program,
+		instruction.MintAccount.Keypair.PublicKey,
+		metadata.Program,
+	)
 
 	fmt.Println(mintAccount.Keypair.PublicKey.ToBase58())
 
@@ -30,10 +39,9 @@ func TestCreateMint(t *testing.T) {
 			Owner:      token.Program,
 		},
 		token.InitializeMint2Instruction{
-			PayerAccount:  payerAccount,
 			MintAccount:   mintAccount,
 			Decimals:      0,
-			MintAuthority: mintAccount.Keypair.PublicKey,
+			MintAuthority: payerAccount.Keypair.PublicKey,
 			FreezeAccount: system.Program,
 		},
 	)

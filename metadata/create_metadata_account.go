@@ -20,18 +20,6 @@ type CreateMetadataAccountInstruction struct {
 	Metadata             Metadata
 }
 
-func (instruction CreateMetadataAccountInstruction) Init() CreateMetadataAccountInstruction {
-	// Metadata account must be derived from mint public key
-	metadataAccountPublicKey, _ := solago.FindProgramAddress(
-		[][]byte{[]byte("metadata"), Program, instruction.MintAccount.Keypair.PublicKey},
-		Program,
-	)
-
-	instruction.MetadataAccount = solago.NewReadOnlyAccount(solago.Keypair{PublicKey: metadataAccountPublicKey})
-
-	return instruction
-}
-
 func (instruction CreateMetadataAccountInstruction) ProgramIDIndex(accounts solago.AccountList) uint8 {
 	return utils.IndexOf(accounts, Account)[0]
 }

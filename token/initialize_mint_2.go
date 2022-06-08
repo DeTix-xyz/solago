@@ -9,6 +9,7 @@ import (
 )
 
 type InitializeMint2Instruction struct {
+	PayerAccount  solago.Account
 	MintAccount   solago.Account
 	Decimals      uint8
 	MintAuthority solago.PublicKey
@@ -30,6 +31,7 @@ func (instruction InitializeMint2Instruction) AccountAddressIndexes(accounts sol
 
 func (instruction InitializeMint2Instruction) CollectAccounts() solago.AccountList {
 	return solago.AccountList{
+		instruction.PayerAccount,
 		instruction.MintAccount,
 		Account,
 	}
