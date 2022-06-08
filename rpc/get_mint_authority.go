@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (client *Client) GetMintAccount(mintPublicKey string) string {
+func (client *Client) GetMintAccountAuthority(mintPublicKey string) string {
 	responseBytes, _ := client.Call(
 		&Request{
 			Version: JSON_RPC_VERSION,
@@ -21,28 +21,7 @@ func (client *Client) GetMintAccount(mintPublicKey string) string {
 		},
 	)
 
-	// {
-	// 	"data": {
-	// 		"parsed": {
-	// 			"info": {
-	// 				"decimals": 0,
-	// 				"freezeAuthority": null,
-	// 				"isInitialized": true,
-	// 				"mintAuthority": "XVxLJDE9nTh3xNegbgXS9eUSBZhEj8YxVgCtr9jHhhJ",
-	// 				"supply": "0"
-	// 			},
-	// 			"type": "mint"
-	// 		},
-	// 		"program": "spl-token",
-	// 		"space": 82
-	// 	},
-	// 	"executable": false,
-	// 	"lamports": 1461600,
-	// 	"owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
-	// 	"rentEpoch": 322
-	// }
-
-	minimumRent := &struct {
+	mintAccount := &struct {
 		Response
 		Result struct {
 			Value struct {
@@ -64,7 +43,7 @@ func (client *Client) GetMintAccount(mintPublicKey string) string {
 		} `json:"result"`
 	}{}
 
-	json.Unmarshal(responseBytes, minimumRent)
+	json.Unmarshal(responseBytes, mintAccount)
 
-	return minimumRent.Result.Value.Data.Parsed.Info.MintAuthority
+	return mintAccount.Result.Value.Data.Parsed.Info.MintAuthority
 }
