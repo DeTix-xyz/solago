@@ -9,4 +9,4 @@ require (
 
 require filippo.io/edwards25519 v1.0.0-rc.1
 
-
+require github.com/near/borsh-go v0.3.1 // indirect

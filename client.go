@@ -14,7 +14,7 @@ type Client struct {
 
 func NewClient(endpoint string) Client {
 	return Client{
-		RPC: rpc.NewClient("https://api.devnet.solana.com", nil),
+		RPC: rpc.NewClient(endpoint, nil),
 	}
 }
 

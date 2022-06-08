@@ -2,7 +2,8 @@ package metadata
 
 import "github.com/deezdegens/solago"
 
-var MetaplexTokenMetaProgram = solago.NewPublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s")
+var Program = solago.NewPublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s")
+var Account = solago.NewReadOnlyAccount(solago.Keypair{PublicKey: Program})
 
 type Creator struct {
 	Address  solago.PublicKey
@@ -30,7 +31,6 @@ type Uses struct {
 }
 
 type Metadata struct {
-	Instruction          MetadataInstruction
 	Name                 string
 	Symbol               string
 	URI                  string
