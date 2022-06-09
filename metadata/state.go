@@ -5,6 +5,10 @@ import "github.com/deezdegens/solago"
 var Program = solago.NewPublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s")
 var Account = solago.NewReadOnlyAccount(solago.Keypair{PublicKey: Program})
 
+// ---------------------------------------------------------------
+// ON CHAIN METADATA
+// ---------------------------------------------------------------
+
 type Creator struct {
 	Address  solago.PublicKey
 	Verified bool
@@ -39,4 +43,30 @@ type Metadata struct {
 	Collection           *Collection
 	Uses                 *Uses
 	IsMutable            bool
+}
+
+// ---------------------------------------------------------------
+// OFF CHAIN METADATA
+// ---------------------------------------------------------------
+
+type File struct {
+	URI  string `json:"uri"`
+	Type string `json:"type"`
+}
+
+type Properties struct {
+	Category string `json:"category"`
+	Files    []File `json:"files"`
+}
+
+type Attribute struct {
+	TraitType string `json:"trait_type"`
+	Value     string `json:"value"`
+}
+
+type MetadataOffChain struct {
+	Image       string      `json:"image"`
+	Description string      `json:"description"`
+	Properties  Properties  `json:"properties"`
+	Attributes  []Attribute `json:"attributes"`
 }

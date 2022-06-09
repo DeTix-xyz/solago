@@ -9,8 +9,8 @@ import (
 func IndexOf[T solago.Account](elements []T, targets ...T) solago.AccountIndexes {
 	indices := []uint8{}
 
-	for index, element := range elements {
-		for _, target := range targets {
+	for _, target := range targets {
+		for index, element := range elements {
 			if reflect.DeepEqual(element, target) {
 				indices = append(indices, uint8(index))
 			}

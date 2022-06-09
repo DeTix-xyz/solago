@@ -48,8 +48,8 @@ func TestCreateMetadata(t *testing.T) {
 			Metadata: metadata.Metadata{
 				Name:                 "Duh Duh Duh",
 				Symbol:               "DDD",
-				URI:                  "https://pastebin.com/raw/0HgNHgwA",
-				SellerFeeBasisPoints: 87_00,
+				URI:                  "https://gj2j5tocsgwcaymr43ta2guiei6rfctsoxexypo3qbv2r7uimhha.arweave.net/MnSezcKRrCBhkebmDRqIIj0SinJ1yXw924BrqP6IYc4",
+				SellerFeeBasisPoints: 99_99,
 				Creators:             nil,
 				Collection:           nil,
 				Uses:                 nil,
